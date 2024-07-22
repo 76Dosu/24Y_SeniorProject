@@ -106,9 +106,10 @@ function DailyWrite(props) {
             prompt: prompt,
             keyword: results,
             date: myTime,
+            image:'',
         })
 
-        navigate('/choicePicture')
+        navigate('/choicePicture', {state : {timestamp}})
     };
 
     const handleClick = (e) => {
