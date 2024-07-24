@@ -143,9 +143,9 @@ function ChoicePicture(props) {
     const imageClick = (url) => {
         return () => {
             setChoosedImageUrl(url);
-            getPostById(location.state);
+            getPostById(location.state.timestamp);
 
-            console.log(location.state);
+            console.log(location.state.timestamp);
             console.log(choosedImageUrl);
         };
     };
@@ -154,9 +154,11 @@ function ChoicePicture(props) {
     const getPostById = async (id) => {
         try {
           const response = await axios.get('http://localhost:3001/posts');
-          const post = response.data.find(post => post.id == id);
+          const post = response.data.find(post => post.id === id);
           if (post) {
-            console.log(post);
+            
+            axios.patch(post.image, choosedImageUrl)
+
           } else {
             console.log('Post not found');
           }
