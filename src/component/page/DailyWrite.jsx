@@ -100,7 +100,7 @@ function DailyWrite(props) {
         let day = new Date().getDate()
         let myTime = `${year}.${month + 1}.${day}`
 
-        axios.post('http://localhost:3001/posts', {
+        axios.post(`http://localhost:3001/posts`, {
             id: timestamp,
             title : title,
             prompt: prompt,

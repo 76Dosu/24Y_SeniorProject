@@ -69,6 +69,9 @@ const InputFrame = styled.div`
     display:flex;
     flex-direction:column;
     align-items:center;
+
+    width:100%;
+    height: 400px;
 `
 
 const Input = styled.input`
@@ -134,8 +137,8 @@ function ChoicePicture(props) {
     // }, []);
 
     const testUrlA = "https://newsimg.hankookilbo.com/2016/04/13/201604131460701467_1.jpg";
-    const testUrlB = "https://flexible.img.hani.co.kr/flexible/normal/970/777/imgdb/resize/2019/0926/00501881_20190926.JPG";
-    const testUrlC = "https://image.dongascience.com/Photo/2016/09/14750507361195.jpg";
+    const testUrlB = "https://previews.123rf.com/images/koufax73/koufax731601/koufax73160100120/50945869-%ED%95%84%EB%93%9C-%EC%A0%95%EC%82%AC%EA%B0%81%ED%98%95-%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%97%90%EC%84%9C-%EC%82%B0%EC%B1%85%ED%95%98%EB%8A%94-%EC%A0%8A%EC%9D%80-%EA%B3%A0%EC%96%91%EC%9D%B4.jpg";
+    const testUrlC = "https://img.freepik.com/premium-photo/cat-near-computer-mouse-work-office-computer-square-format_199743-1487.jpg";
 
     // 선택 이미지 콘솔찍기
     const [choosedImageUrl, setChoosedImageUrl] = useState(testUrlB);
@@ -143,7 +146,7 @@ function ChoicePicture(props) {
     const imageClick = (url) => {
         return () => {
             setChoosedImageUrl(url);
-            getPostById(location.state.timestamp);
+            // getPostById(location.state.timestamp);
 
             console.log(location.state.timestamp);
             console.log(choosedImageUrl);
@@ -151,21 +154,21 @@ function ChoicePicture(props) {
     };
 
     // 이미지 db 저장
-    const getPostById = async (id) => {
-        try {
-          const response = await axios.get('http://localhost:3001/posts');
-          const post = response.data.find(post => post.id === id);
-          if (post) {
+    // const getPostById = async (id) => {
+    //     try {
+    //       const response = await axios.get('http://localhost:3001/posts');
+    //       const post = response.data.find(post => post.id === id);
+    //       if (post) {
             
-            axios.patch(post.image, choosedImageUrl)
+    //         axios.patch(post.image, choosedImageUrl)
 
-          } else {
-            console.log('Post not found');
-          }
-        } catch (error) {
-          console.error('Error fetching the post:', error);
-        }
-      };
+    //       } else {
+    //         console.log('Post not found');
+    //       }
+    //     } catch (error) {
+    //       console.error('Error fetching the post:', error);
+    //     }
+    //   };
       
     return (
         
