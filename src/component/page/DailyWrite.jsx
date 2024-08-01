@@ -3,6 +3,8 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { db } from "../../firebase"
+
 //ui
 import Header from "../ui/Header";
 import WriteButtonF from "../ui/Button/WriteButtonF";
@@ -93,21 +95,29 @@ function DailyWrite(props) {
 
     // axios로 사용자 데이터 db.json으로 넘기기
     const onSubmit = () => {
-        let timestamp = new Date().getTime()
+        let timestamp = new Date().getTime().toString();
 
         let year = new Date().getFullYear()
         let month = new Date().getMonth();
         let day = new Date().getDate()
         let myTime = `${year}.${month + 1}.${day}`
 
-        axios.post(`http://localhost:3001/posts`, {
+        db.collection('daily').doc(timestamp).set({
             id: timestamp,
             title : title,
             prompt: prompt,
             keyword: results,
             date: myTime,
-            image:'',
         })
+
+        // axios.post(`http://localhost:3001/posts`, {
+        //     id: timestamp,
+        //     title : title,
+        //     prompt: prompt,
+        //     keyword: results,
+        //     date: myTime,
+        //     image:'',
+        // })
 
         navigate('/choicePicture', {state : {timestamp}})
     };

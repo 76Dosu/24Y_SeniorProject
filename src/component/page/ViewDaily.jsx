@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
+import { db } from "../../firebase"
+
 //ui
 import Header from "../ui/Header";
 import Title from "../ui/Title";
@@ -38,15 +40,33 @@ function ViewDaily(props) {
 
     const [posts, setPosts] = useState([]);
 
-    const getPosts = () => {
-      axios.get('http://localhost:3001/posts').then((res) => {
-        setPosts(res.data);
-      })
-    }
+    useEffect(function() {
+        let tempData = [];
 
-    useEffect(() => {
-      getPosts();
-    }, []);
+        db.collection('daily').get().then(function(qs) {
+            qs.forEach(function(doc) {
+                tempData.push(doc.data()) // <<===== doc마다 tempData를 배열에 추가
+            })
+
+            setPosts(tempData);
+        })
+    }, [])
+
+    // const getPosts = () => {
+
+    //     db.collection('daily').doc('1722508643000').get().then(function(res) {
+    //         setPosts(res.data());
+    //         console.log(posts)
+    //     })
+
+    //     //   axios.get('http://localhost:3001/posts').then((res) => {
+    //     //     setPosts(res.data);
+    //     //   })
+    // }
+
+    // useEffect(() => {
+    //   getPosts();
+    // }, []);
 
     return (
         
