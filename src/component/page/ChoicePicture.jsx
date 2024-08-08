@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+
+import { db } from "../../firebase"
 
 //ui
 import Header from "../ui/Header";
@@ -82,6 +83,7 @@ const Input = styled.input`
 const Label = styled.label`
     width:24px;
     height:24px;
+    border:1px solid white;
 `
 
 function ChoicePicture(props) {
@@ -153,22 +155,15 @@ function ChoicePicture(props) {
         };
     };
 
-    // 이미지 db 저장
-    // const getPostById = async (id) => {
-    //     try {
-    //       const response = await axios.get('http://localhost:3001/posts');
-    //       const post = response.data.find(post => post.id === id);
-    //       if (post) {
-            
-    //         axios.patch(post.image, choosedImageUrl)
+    const SubmitImage = () => {
 
-    //       } else {
-    //         console.log('Post not found');
-    //       }
-    //     } catch (error) {
-    //       console.error('Error fetching the post:', error);
-    //     }
-    //   };
+        db.collection('daily').doc(location.state.timestamp).update({
+            image: choosedImageUrl,
+        })
+
+        navigate('/')
+    }
+    
       
     return (
         
@@ -205,7 +200,7 @@ function ChoicePicture(props) {
                     <WriteButtonUF buttonName="뒤로가기"></WriteButtonUF>
                 </WriteButtonFrame>
 
-                <WriteButtonFrame>
+                <WriteButtonFrame onClick={SubmitImage}>
                     <WriteButtonF buttonName="다음으로"></WriteButtonF>
                 </WriteButtonFrame>
             </EntireButtonFrame> 
