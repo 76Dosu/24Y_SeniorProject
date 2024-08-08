@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 //ui
 import Header from "../ui/Header";
@@ -69,6 +69,9 @@ const InputFrame = styled.div`
     display:flex;
     flex-direction:column;
     align-items:center;
+
+    width:100%;
+    height: 400px;
 `
 
 const Input = styled.input`
@@ -84,55 +87,89 @@ const Label = styled.label`
 function ChoicePicture(props) {
 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    //키워드 값 동기처리
-    const [keyword, setKeyworld] = useState('')
+    // //키워드 값 동기처리
+    // const [keyword, setKeyworld] = useState('')
 
-    const getPosts = () => {
-            axios.get('http://localhost:3001/posts').then((res) => {
-            setKeyworld(res.data[res.data.length - 1].keyword);
-        })
-    }
+    // const getPosts = () => {
+    //         axios.get('http://localhost:3001/posts').then((res) => {
+    //         setKeyworld(res.data[res.data.length - 1].keyword);
+    //     })
+    // }
 
-    // 이미지 생성
-    const GPT_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+    // // 이미지 생성
+    // const GPT_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
-    const [imageUrlA, setImageUrlA] = useState('');
-    const [imageUrlB, setImageUrlB] = useState('');
-    const [imageUrlC, setImageUrlC] = useState('');
+    // const [imageUrlA, setImageUrlA] = useState('');
+    // const [imageUrlB, setImageUrlB] = useState('');
+    // const [imageUrlC, setImageUrlC] = useState('');
 
-    const generateImage = async () => {
-        try {
-        const response = await fetch('https://api.openai.com/v1/images/generations', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${GPT_API_KEY}`
-            },
-            body: JSON.stringify({
-            model: "dall-e-2",
-            prompt: `${keyword}를 대표하는 그림을 그려줘`,
-            n: 3,
-            size: '1024x1024'
-            })
-        });
+    // const generateImage = async () => {
+    //     try {
+    //     const response = await fetch('https://api.openai.com/v1/images/generations', {
+    //         method: 'POST',
+    //         headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${GPT_API_KEY}`
+    //         },
+    //         body: JSON.stringify({
+    //         model: "dall-e-2",
+    //         prompt: `${keyword}를 대표하는 그림을 그려줘`,
+    //         n: 3,
+    //         size: '1024x1024'
+    //         })
+    //     });
 
-        const data = await response.json();
-            setImageUrlA(data.data[0].url);
-            setImageUrlB(data.data[1].url);
-            setImageUrlC(data.data[2].url);
-        } catch (error) {
-            console.error('Error generating image:', error);
-        }
+    //     const data = await response.json();
+    //         setImageUrlA(data.data[0].url);
+    //         setImageUrlB(data.data[1].url);
+    //         setImageUrlC(data.data[2].url);
+    //     } catch (error) {
+    //         console.error('Error generating image:', error);
+    //     }
+    // };
+
+    // // 대표이미지 등록
+    // useEffect(() => {
+    //     getPosts();
+    //     generateImage();
+    // }, []);
+
+    const testUrlA = "https://newsimg.hankookilbo.com/2016/04/13/201604131460701467_1.jpg";
+    const testUrlB = "https://previews.123rf.com/images/koufax73/koufax731601/koufax73160100120/50945869-%ED%95%84%EB%93%9C-%EC%A0%95%EC%82%AC%EA%B0%81%ED%98%95-%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%97%90%EC%84%9C-%EC%82%B0%EC%B1%85%ED%95%98%EB%8A%94-%EC%A0%8A%EC%9D%80-%EA%B3%A0%EC%96%91%EC%9D%B4.jpg";
+    const testUrlC = "https://img.freepik.com/premium-photo/cat-near-computer-mouse-work-office-computer-square-format_199743-1487.jpg";
+
+    // 선택 이미지 콘솔찍기
+    const [choosedImageUrl, setChoosedImageUrl] = useState(testUrlB);
+
+    const imageClick = (url) => {
+        return () => {
+            setChoosedImageUrl(url);
+            // getPostById(location.state.timestamp);
+
+            console.log(location.state.timestamp);
+            console.log(choosedImageUrl);
+        };
     };
 
-    // 대표이미지 등록
+    // 이미지 db 저장
+    // const getPostById = async (id) => {
+    //     try {
+    //       const response = await axios.get('http://localhost:3001/posts');
+    //       const post = response.data.find(post => post.id === id);
+    //       if (post) {
+            
+    //         axios.patch(post.image, choosedImageUrl)
 
-    useEffect(() => {
-        getPosts();
-        generateImage();
-    }, []);
-
+    //       } else {
+    //         console.log('Post not found');
+    //       }
+    //     } catch (error) {
+    //       console.error('Error fetching the post:', error);
+    //     }
+    //   };
+      
     return (
         
         <Wrapper>
@@ -144,27 +181,27 @@ function ChoicePicture(props) {
             </TitleFrame>
 
             <GenImageFrame>
-                <InputFrame>
-                    <GenImage imgURL={imageUrlA}></GenImage>
-                    <Label for="test"></Label>
-                    <Input name="test" id="test" value={imageUrlA} type="radio"></Input>
+                <InputFrame onClick={imageClick(testUrlA)}>
+                    <GenImage imgURL={testUrlA}></GenImage>
+                    <Label for="imgA"></Label>
+                    <Input name="imgA" id="imgA" value={testUrlA} type="radio"></Input>
                 </InputFrame>
                 
-                <InputFrame>
-                    <GenImage imgURL={imageUrlB}></GenImage>
-                    <Label for="test1"></Label>
-                    <Input name="test" id="test1" value={imageUrlB} type="radio"></Input>
+                <InputFrame onClick={imageClick(testUrlB)}>
+                    <GenImage imgURL={testUrlB}></GenImage>
+                    <Label for="imgB"></Label>
+                    <Input name="imgB" id="imgB" value={testUrlB} type="radio"></Input>
                 </InputFrame>
 
-                <InputFrame>
-                    <GenImage imgURL={imageUrlC}></GenImage>
-                    <Label for="test2"></Label>
-                    <Input name="test" id="test2" value={imageUrlC} type="radio"></Input>
+                <InputFrame onClick={imageClick(testUrlC)}> 
+                    <GenImage imgURL={testUrlC}></GenImage>
+                    <Label for="imgC"></Label>
+                    <Input name="imgC" id="imgC" value={testUrlC} type="radio"></Input>
                 </InputFrame>
             </GenImageFrame>
 
             <EntireButtonFrame>
-                <WriteButtonFrame onClick={(e) => {navigate(-1)}}>
+                <WriteButtonFrame onClick={( ) => {navigate(-1)}}>
                     <WriteButtonUF buttonName="뒤로가기"></WriteButtonUF>
                 </WriteButtonFrame>
 
