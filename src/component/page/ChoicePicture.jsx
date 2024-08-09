@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+
+import { db } from "../../firebase"
 
 //ui
 import Header from "../ui/Header";
@@ -71,17 +72,23 @@ const InputFrame = styled.div`
     align-items:center;
 
     width:100%;
-    height: 400px;
+    height: fit-content;
+
+    position:relative;
 `
 
 const Input = styled.input`
     width:fit-content;
-    display:none;
+    /* display:none; */
 `
 
 const Label = styled.label`
-    width:24px;
-    height:24px;
+    width:inherit;
+    height:100%;
+    border:1px solid red;
+
+    position:absolute;
+    cursor:pointer;
 `
 
 function ChoicePicture(props) {
@@ -153,22 +160,15 @@ function ChoicePicture(props) {
         };
     };
 
-    // 이미지 db 저장
-    // const getPostById = async (id) => {
-    //     try {
-    //       const response = await axios.get('http://localhost:3001/posts');
-    //       const post = response.data.find(post => post.id === id);
-    //       if (post) {
-            
-    //         axios.patch(post.image, choosedImageUrl)
+    const SubmitImage = () => {
 
-    //       } else {
-    //         console.log('Post not found');
-    //       }
-    //     } catch (error) {
-    //       console.error('Error fetching the post:', error);
-    //     }
-    //   };
+        db.collection('daily').doc(location.state.timestamp).update({
+            image: choosedImageUrl,
+        })
+
+        navigate('/')
+    }
+    
       
     return (
         
@@ -182,21 +182,21 @@ function ChoicePicture(props) {
 
             <GenImageFrame>
                 <InputFrame onClick={imageClick(testUrlA)}>
-                    <GenImage imgURL={testUrlA}></GenImage>
+                    <GenImage imgURL={testUrlA} isSelected={choosedImageUrl === testUrlA}></GenImage>
                     <Label for="imgA"></Label>
-                    <Input name="imgA" id="imgA" value={testUrlA} type="radio"></Input>
+                    <Input name="img" id="imgA" value={testUrlA} type="radio"></Input>
                 </InputFrame>
                 
                 <InputFrame onClick={imageClick(testUrlB)}>
-                    <GenImage imgURL={testUrlB}></GenImage>
+                    <GenImage imgURL={testUrlB} isSelected={choosedImageUrl === testUrlB}></GenImage>
                     <Label for="imgB"></Label>
-                    <Input name="imgB" id="imgB" value={testUrlB} type="radio"></Input>
+                    <Input name="img" id="imgB" value={testUrlB} type="radio"></Input>
                 </InputFrame>
 
                 <InputFrame onClick={imageClick(testUrlC)}> 
-                    <GenImage imgURL={testUrlC}></GenImage>
+                    <GenImage imgURL={testUrlC} isSelected={choosedImageUrl === testUrlC}></GenImage>
                     <Label for="imgC"></Label>
-                    <Input name="imgC" id="imgC" value={testUrlC} type="radio"></Input>
+                    <Input name="img" id="imgC" value={testUrlC} type="radio"></Input>
                 </InputFrame>
             </GenImageFrame>
 
@@ -205,7 +205,7 @@ function ChoicePicture(props) {
                     <WriteButtonUF buttonName="뒤로가기"></WriteButtonUF>
                 </WriteButtonFrame>
 
-                <WriteButtonFrame>
+                <WriteButtonFrame onClick={SubmitImage}>
                     <WriteButtonF buttonName="다음으로"></WriteButtonF>
                 </WriteButtonFrame>
             </EntireButtonFrame> 

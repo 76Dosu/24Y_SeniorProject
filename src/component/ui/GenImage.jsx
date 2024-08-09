@@ -9,14 +9,18 @@ const GenImageItems = styled.img`
 
     object-fit:cover;
     overflow:hidden;
+    transition:.3s;
+
+    filter: ${({ isSelected }) => (isSelected ? "none" : "grayscale(1)")};
 `
+    
 
 function GenImage(props) {
     
-    const { imgURL } = props;
+    const { imgURL, isSelected } = props;
 
     return (
-        <GenImageItems src={imgURL}></GenImageItems>
+        <GenImageItems src={imgURL} isSelected={isSelected}></GenImageItems>
     )
 
 }

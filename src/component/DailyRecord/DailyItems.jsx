@@ -7,6 +7,8 @@ import styled from "styled-components";
 
 //styled
 const Wrapper = styled.div`
+    display:flex;
+
     width:100%;
     padding:24px;
     margin-bottom:24px;
@@ -21,6 +23,20 @@ const Wrapper = styled.div`
     &:last-child {
         margin-bottom:0px;
     }
+`
+
+const DailyInfoContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+`
+
+const DailyImage = styled.img`
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius:4px;
+
+    margin-right:32px;
 `
 
 const DailyTItle = styled.p`
@@ -41,8 +57,13 @@ function DailyItems(props) {
     return (
         
         <Wrapper>
-            <DailyTItle>{post.title}</DailyTItle>
-            <DailyWriteTime>{post.date}</DailyWriteTime>
+            <DailyImage src={post.image}/>
+
+            <DailyInfoContainer>
+                <DailyTItle>{post.title}</DailyTItle>
+                <DailyWriteTime>{post.date}</DailyWriteTime>
+            </DailyInfoContainer>
+            
         </Wrapper>
         
     )   
