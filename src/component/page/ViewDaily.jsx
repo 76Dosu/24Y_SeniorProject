@@ -14,8 +14,7 @@ import DailyList from "../DailyRecord/DailyList";
 //styled
 const Wrapper = styled.div`
     width:100%;
-    height: 100vh;
-    padding:0px 11.54%;
+    padding:0px 11.54% 100px 11.54%;
 
     background-color:var(--main-bcColor);
 `
@@ -50,22 +49,6 @@ function ViewDaily(props) {
             setPosts(tempData);
         })
     }, [])
-
-    // const getPosts = () => {
-
-    //     db.collection('daily').doc('1722508643000').get().then(function(res) {
-    //         setPosts(res.data());
-    //         console.log(posts)
-    //     })
-
-    //     //   axios.get('http://localhost:3001/posts').then((res) => {
-    //     //     setPosts(res.data);
-    //     //   })
-    // }
-
-    // useEffect(() => {
-    //   getPosts();
-    // }, []);
 
     return (
         
