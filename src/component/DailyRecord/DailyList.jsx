@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
 function DailyList(props) {
 
-    const { posts } = props;
+    const { posts, onClickItem } = props;
 
     return (
         
@@ -21,7 +21,7 @@ function DailyList(props) {
             {posts.map(post => {
 
                 return (
-                    <DailyItems key={post.id} post={post}></DailyItems>
+                    <DailyItems key={post.id} post={post} onClick={() => onClickItem(post)}></DailyItems>
                 );
 
             })}

@@ -15,6 +15,7 @@ const Wrapper = styled.div`
 
     background-color:#2B3034;
     border-radius:8px;
+    cursor:pointer;
 
     &:first-child {
         margin-top:24px;

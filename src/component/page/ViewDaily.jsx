@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import { db } from "../../firebase"
 
@@ -37,6 +38,7 @@ const ContentsFrame = styled.div`
 function ViewDaily(props) {
 
     const [posts, setPosts] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(function() {
         let tempData = [];
@@ -63,7 +65,7 @@ function ViewDaily(props) {
             <DivideLine></DivideLine>
 
             <ContentsFrame>
-                <DailyList posts={posts}></DailyList>
+                <DailyList posts={posts} onClickItem={(p) => {navigate('/post/' + p.id)}}></DailyList>
             </ContentsFrame>
 
         </Wrapper>
