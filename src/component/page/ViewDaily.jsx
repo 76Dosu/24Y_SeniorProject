@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import { db } from "../../firebase"
 
@@ -36,7 +37,8 @@ const ContentsFrame = styled.div`
 
 function ViewDaily(props) {
 
-    const [posts, setPosts] = useState([]);
+    const [data, setData] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(function() {
         let tempData = [];
@@ -46,7 +48,7 @@ function ViewDaily(props) {
                 tempData.push(doc.data()) // <<===== doc마다 tempData를 배열에 추가
             })
 
-            setPosts(tempData);
+            setData(tempData);
         })
     }, [])
 
@@ -63,7 +65,7 @@ function ViewDaily(props) {
             <DivideLine></DivideLine>
 
             <ContentsFrame>
-                <DailyList posts={posts}></DailyList>
+                <DailyList posts={data} onClickItem={(p) => {navigate('/post/' + p.id)}}></DailyList>
             </ContentsFrame>
 
         </Wrapper>

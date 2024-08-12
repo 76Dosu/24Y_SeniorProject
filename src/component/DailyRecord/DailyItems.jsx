@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 //ui
 
@@ -15,6 +16,7 @@ const Wrapper = styled.div`
 
     background-color:#2B3034;
     border-radius:8px;
+    cursor:pointer;
 
     &:first-child {
         margin-top:24px;
@@ -53,10 +55,18 @@ const DailyWriteTime = styled.p`
 function DailyItems(props) {
 
     const { post } = props;
+    const navigate = useNavigate();
+
+    const testClick = (p) => {
+
+        navigate('/post/' + post.id)
+        console.log("test")
+
+    }
 
     return (
         
-        <Wrapper>
+        <Wrapper onClick={testClick}>
             <DailyImage src={post.image}/>
 
             <DailyInfoContainer>
