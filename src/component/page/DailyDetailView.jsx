@@ -32,7 +32,7 @@ function DailyDetailView(props) {
     })
 
     useEffect(function() {
-        db.collection('post').doc(postId).get().then(function(doc) {
+        db.collection('daily').doc(postId).get().then(function(doc) {
             setPost(doc.data())
         })     
     },[postId]);

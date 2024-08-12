@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 function DailyList(props) {
 
     const { posts, onClickItem } = props;
-
+    
     return (
         
         <Wrapper>
