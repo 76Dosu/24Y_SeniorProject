@@ -71,8 +71,23 @@ const WriteButtonFrame = styled.div`
     }
 `
 
-const TestText = styled.p`
+const LoadingContainer = styled.div`
+    width:100vw;    
+    height:100vh;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:99;
+    background-color:rgba(0, 0, 0, 0.7);
+    
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`
+
+const LoadingText = styled.p`
     font-size:24px;
+    color:white;
 `
 
 function DailyWrite(props) {
@@ -84,6 +99,8 @@ function DailyWrite(props) {
     const [prompt, setPrompt] = useState("");
     const [results, setResults] = useState("");
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const handleContentsChange = (e) => {
         setPrompt(e.target.value);
@@ -109,15 +126,6 @@ function DailyWrite(props) {
             date: myTime,
         })
 
-        // axios.post(`http://localhost:3001/posts`, {
-        //     id: timestamp,
-        //     title : title,
-        //     prompt: prompt,
-        //     keyword: results,
-        //     date: myTime,
-        //     image:'',
-        // })
-
         navigate('/choicePicture', {state : {timestamp}})
     };
 
@@ -141,6 +149,7 @@ function DailyWrite(props) {
 
     // callGPT([질문], [저장할 배열])
     function callGPT(prompt) {
+        setIsLoading(true);
         fetch(ENDPOINT_URL, {
             method: 'POST',
             headers: {
@@ -163,49 +172,102 @@ function DailyWrite(props) {
             })
             .catch((error) => {
                 console.error("Error:", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }
 
     return (
 
-        <Wrapper>
-            <Header></Header>
+        <div>
+        {
+            isLoading === true 
+            
+            ?
 
-            <TitleFrame>
-                <Title text="하루를 기록해보세요!"></Title>
-            </TitleFrame>
+                
+                <Wrapper>
 
-            <DivideLine />
+                    <LoadingContainer>
+                        <LoadingText>하루를 분석중입니다.</LoadingText>
+                    </LoadingContainer>
+                    
+                    <Header></Header>
 
-            <WriteFrame>
-                <InputTitleFrame>
-                    <InputTextTitle onChange={handleTitleChange} value={title}></InputTextTitle>
-                </InputTitleFrame>
+                    <TitleFrame>
+                        <Title text="오늘 하루를 간단히 적어보세요."></Title>
+                    </TitleFrame>
 
-                <InputFrame>
-                    <InputTextContents onChange={handleContentsChange} value={prompt}></InputTextContents>
-                </InputFrame>
-            </WriteFrame>
+                    <DivideLine />
 
-            <TestText>{results}</TestText>
+                    <WriteFrame>
+                        <InputTitleFrame>
+                            <InputTextTitle onChange={handleTitleChange} value={title}></InputTextTitle>
+                        </InputTitleFrame>
 
+                        <InputFrame>
+                            <InputTextContents onChange={handleContentsChange} value={prompt}></InputTextContents>
+                        </InputFrame>
+                    </WriteFrame>
 
-            <EntireButtonFrame>
-                <WriteButtonFrame onClick={createDaily}>
-                    <WriteButtonUF buttonName="테스트 일기생성"></WriteButtonUF>
-                </WriteButtonFrame>     
+                    <EntireButtonFrame>
+                        <WriteButtonFrame onClick={createDaily}>
+                            <WriteButtonUF buttonName="테스트 일기생성"></WriteButtonUF>
+                        </WriteButtonFrame>     
 
-                <WriteButtonFrame onClick={(e) => {navigate(-1)}}>
-                    <WriteButtonUF buttonName="뒤로가기"></WriteButtonUF>
-                </WriteButtonFrame>
+                        <WriteButtonFrame onClick={(e) => {navigate(-1)}}>
+                            <WriteButtonUF buttonName="뒤로가기"></WriteButtonUF>
+                        </WriteButtonFrame>
 
-                <WriteButtonFrame onClick={handleClick}>
-                    <WriteButtonF buttonName="다음으로"></WriteButtonF>
-                </WriteButtonFrame>
-            </EntireButtonFrame> 
+                        <WriteButtonFrame onClick={handleClick}>
+                            <WriteButtonF buttonName="다음으로"></WriteButtonF>
+                        </WriteButtonFrame>
+                    </EntireButtonFrame> 
+                </Wrapper>
+                
 
-        </Wrapper>
+            :
 
+                <Wrapper>
+                
+                
+                <Header></Header>
+
+                <TitleFrame>
+                    <Title text="오늘 하루를 간단히 적어보세요."></Title>
+                </TitleFrame>
+
+                <DivideLine />
+
+                <WriteFrame>
+                    <InputTitleFrame>
+                        <InputTextTitle onChange={handleTitleChange} value={title}></InputTextTitle>
+                    </InputTitleFrame>
+
+                    <InputFrame>
+                        <InputTextContents onChange={handleContentsChange} value={prompt}></InputTextContents>
+                    </InputFrame>
+                </WriteFrame>
+
+                <EntireButtonFrame>
+                    <WriteButtonFrame onClick={createDaily}>
+                        <WriteButtonUF buttonName="테스트 일기생성"></WriteButtonUF>
+                    </WriteButtonFrame>     
+
+                    <WriteButtonFrame onClick={(e) => {navigate(-1)}}>
+                        <WriteButtonUF buttonName="뒤로가기"></WriteButtonUF>
+                    </WriteButtonFrame>
+
+                    <WriteButtonFrame onClick={handleClick}>
+                        <WriteButtonF buttonName="다음으로"></WriteButtonF>
+                    </WriteButtonFrame>
+                </EntireButtonFrame> 
+
+            </Wrapper>
+
+        }
+    </div>
     )
 
 }

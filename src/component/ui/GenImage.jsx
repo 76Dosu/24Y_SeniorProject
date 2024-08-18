@@ -11,6 +11,7 @@ const GenImageItems = styled.img`
     overflow:hidden;
     transition:.3s;
 
+    opacity: ${({ isSelected }) => (isSelected ? "1" : "0.5")};
     filter: ${({ isSelected }) => (isSelected ? "none" : "grayscale(1)")};
 `
     

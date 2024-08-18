@@ -79,13 +79,12 @@ const InputFrame = styled.div`
 
 const Input = styled.input`
     width:fit-content;
-    /* display:none; */
+    display:none;
 `
 
 const Label = styled.label`
     width:inherit;
     height:100%;
-    border:1px solid red;
 
     position:absolute;
     cursor:pointer;
@@ -177,7 +176,7 @@ function ChoicePicture(props) {
 
             <TitleFrame>
                 <Title text="등록할 대표 이미지를 선택하세요."></Title>
-                <SubText>김희찬님의 2024년 5월 3일 일기를 바탕으로 생성된 이미지입니다.</SubText>
+                <SubText>김희찬님의 2024년 5월 3일 하루를 바탕으로 생성된 이미지입니다.</SubText>
             </TitleFrame>
 
             <GenImageFrame>

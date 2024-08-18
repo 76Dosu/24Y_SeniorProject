@@ -57,7 +57,7 @@ function DailyItems(props) {
     const { post } = props;
     const navigate = useNavigate();
 
-    const testClick = (p) => {
+    const testClick = () => {
 
         navigate('/post/' + post.id)
         console.log("test")
