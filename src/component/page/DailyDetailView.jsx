@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 
 import { db } from '../../firebase'
 
-//image
+import Header from "../ui/Header";
+import Title from "../ui/Title"
 
 //styled
 const Wrapper = styled.div`
@@ -14,9 +15,17 @@ const Wrapper = styled.div`
     background-color:var(--main-bcColor);
 `
 
-const Title = styled.p`
-    font-size:20px;
+const TitleFrame = styled.div`
+    width:100%;
+    margin-top:100px;
 `
+
+const DivideLine = styled.div`
+    height:1px;
+    background-color:white;
+    margin:12px 0px 0px 0px;
+`
+
 
 function DailyDetailView(props) {
 
@@ -41,7 +50,17 @@ function DailyDetailView(props) {
         
         <Wrapper>
 
-            <Title>{post.title}</Title>
+            <Header/>
+            
+            <TitleFrame>
+                <Title text={post.title}/>
+            </TitleFrame>
+            <DivideLine />
+
+            <ContentsContainer>
+                {/* 일기 내용 */}
+                <DailyContainer></DailyContainer>
+            </ContentsContainer>
 
         </Wrapper>
         
