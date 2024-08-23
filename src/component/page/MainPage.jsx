@@ -29,7 +29,7 @@ const ServiceFrame = styled.div`
     margin-bottom:80px;
 `
 
-function MainPage(props) {
+function MainPage() {
 
     return (
         
@@ -37,8 +37,8 @@ function MainPage(props) {
             <Title text="안녕하세요 김희찬님" ></Title>
 
             <SubTitle text="오늘 하루는 어땠나요? 일기를 통해 하루를 기록해보세요!"
-                      marginTop="12px"
-                      marginBottom="120px">
+                      mt="12px"
+                      mb="120px">
 
             </SubTitle>
 
@@ -47,7 +47,7 @@ function MainPage(props) {
                          serviceIcon={DailyWrite} 
                          navigateLink="write"></Service>
                 <Service color="white"
-                         backgroundColor="#2B3034" 
+                         bc="#2B3034" 
                          serviceName="일기관리" 
                          serviceIcon={DailyManage} 
                          navigateLink="viewDaily"></Service>

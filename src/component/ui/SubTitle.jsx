@@ -7,16 +7,16 @@ const SubTitleText = styled.p`
     line-height:1.4;
     color:white;
 
-    margin-top:${props => props.marginTop};
-    margin-bottom:${props => props.marginBottom};
+    margin-top:${props => props.mt};
+    margin-bottom:${props => props.mb};
 `
 
 function SubTitle(props) {
 
-    const { text, marginTop, marginBottom } = props;
+    const { text, mt, mb } = props;
 
     return (
-        <SubTitleText marginTop={marginTop} marginBottom={marginBottom}>{text}</SubTitleText>
+        <SubTitleText mt={mt} mb={mb}>{text}</SubTitleText>
     )   
 
 }

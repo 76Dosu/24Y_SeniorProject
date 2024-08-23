@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const ServiceContainer = styled.div`
     width: 326px;
     height: 326px;
-    background-color:${props => props.backgroundColor || "white"};
+    background-color:${props => props.bc || "white"};
     border-radius:36px;
     box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.15);
     transition: .3s;
@@ -42,12 +42,12 @@ const ServiceIcon = styled.img`
 
 function Service(props) {
 
-    const { serviceName, serviceIcon, navigateLink, backgroundColor, color } = props;
+    const { serviceName, serviceIcon, navigateLink, bc, color } = props;
     const navigate = useNavigate();
 
     return (
         
-        <ServiceContainer backgroundColor={backgroundColor} onClick={() => {navigate(`/${navigateLink}`)}}>
+        <ServiceContainer bc={bc} onClick={() => {navigate(`/${navigateLink}`)}}>
             <ServiceName color={color}>{serviceName}</ServiceName>
             <ServiceIcon src={serviceIcon}></ServiceIcon>
         </ServiceContainer>
