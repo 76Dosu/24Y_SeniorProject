@@ -42,7 +42,7 @@ function Header(props) {
         <Wrapper>
             <HeaderLogo src={LogoImage} onClick={() => {navigate('/')}}></HeaderLogo>
             <Gnb>
-                <GnbList onClick={() => navigate('/manage')}>기록보기</GnbList>
+                <GnbList onClick={() => navigate('/viewDaily')}>기록보기</GnbList>
                 <HeaderButtonF buttonName="일기작성" navigateLink="write"></HeaderButtonF>
             </Gnb>
         </Wrapper>

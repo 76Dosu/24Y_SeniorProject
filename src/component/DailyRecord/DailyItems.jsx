@@ -66,7 +66,7 @@ function DailyItems(props) {
     return (
         
         <Wrapper onClick={testClick}>
-            <DailyImage src={post.image}/>
+            <DailyImage src={post.choosedImage}/>
 
             <DailyInfoContainer>
                 <DailyTItle>{post.title}</DailyTItle>
