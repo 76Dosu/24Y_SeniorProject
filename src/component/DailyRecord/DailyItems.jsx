@@ -60,7 +60,6 @@ function DailyItems(props) {
     const testClick = () => {
 
         navigate('/post/' + post.id)
-        console.log("test")
 
     }
 

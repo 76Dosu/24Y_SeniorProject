@@ -36,7 +36,7 @@ const ContentsFrame = styled.div`
     width:100%;
 `
 
-function ViewDaily(props) {
+function ViewDaily() {
 
     const [data, setData] = useState([]);
     const navigate = useNavigate();
