@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { db } from "../../firebase"
@@ -17,8 +17,8 @@ import InputTextTitle from "../ui/InputTextArea/InputTextTitle";
 //styled
 const Wrapper = styled.div`
     width:100%;
-    height:100vh;
-    padding:0px 11.54%;
+    min-height:100vh;
+    padding:0px 11.54% 100px 11.54%;
     background-color:var(--main-bcColor);
 `
 
@@ -85,10 +85,28 @@ const LoadingContainer = styled.div`
     justify-content:center;
 `
 
+const typingAnimation = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateX(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
 const LoadingText = styled.p`
     font-size:24px;
     color:white;
-`
+    display: inline-block;
+    span {
+        display: inline-block;
+        opacity: 0;
+        animation: ${typingAnimation} 2s infinite;
+        animation-delay: calc(0.1s * var(--i));
+    }
+`;
 
 function DailyWrite(props) {
 
@@ -97,7 +115,13 @@ function DailyWrite(props) {
     // 사용자 입력 받아오기
     const [title, setTitle] = useState("")
     const [prompt, setPrompt] = useState("");
-    const [results, setResults] = useState("");
+
+    
+    const [results, setResults] = useState(""); // callGPTKeyword 결과
+    const [emotionalScore, setEmotionalScore] = useState("");// callGPTAnalysis
+    const [analysisReason, setAnalysisReason] = useState(""); // callGPTReason
+    const [analysisSolution, setAnalysisSolution] = useState(""); // callGPTSolution
+
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -124,15 +148,28 @@ function DailyWrite(props) {
             prompt: prompt,
             keyword: results,
             date: myTime,
+            score: emotionalScore,
+            reason: analysisReason,
+            solution: analysisSolution,
         });
     
-        navigate('/choicePicture', { state: { timestamp, results } });
-    }, [title, prompt, results, navigate]); // 필요한 의존성 추가
+        navigate('/choicePicture', { state: { timestamp, results } }); 
+    }, [title, prompt, results, emotionalScore, analysisReason, analysisSolution, navigate]); // 필요한 의존성 추가
 
-    const handleClick = (e) => {
-        callGPT(prompt, results);
+    const handleClick = async (e) => {
+        try {
+
+            await callGPTKeyword(prompt);
+            await callGPTAnalysis(prompt);
+            await callGPTReason(prompt);
+            await callGPTSolution(prompt);
+            
+            setIsSubmitted(true);
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
     }
-
     useEffect(() => {
         if (isSubmitted) {
             onSubmit();
@@ -147,10 +184,10 @@ function DailyWrite(props) {
     const ENDPOINT_URL = "https://api.openai.com/v1/chat/completions";
     const GPT_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
-    // callGPT([질문], [저장할 배열])
-    function callGPT(prompt) {
+    // callGPTKeyword 함수
+    function callGPTKeyword(prompt) {
         setIsLoading(true);
-        fetch(ENDPOINT_URL, {
+        return fetch(ENDPOINT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -164,19 +201,113 @@ function DailyWrite(props) {
                 }]  
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                // 응답은 data.choices[0].message.content로 불러와져서 result 배열에 저장
-                setResults((data.choices[0].message.content));
-                setIsSubmitted(true);
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+        .then(response => response.json())
+        .then(data => {
+            console.log("Keyword API Response:", data);
+            setResults(data.choices[0].message.content);
+        })
+        .catch((error) => {
+            console.error("Error in callGPTKeyword:", error);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
     }
+
+    // callGPTAnalysis 함수
+    function callGPTAnalysis(prompt) {
+        setIsLoading(true);
+        return fetch(ENDPOINT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GPT_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "user",
+                    content: `${prompt}라는 일기에 대해서 일기속 드러나는 감정에 대해서 점수로 내줘. 부정적인 감정이 많으면 점수를 낮게 줘도 돼 100점 만점이고 "80"처럼 숫자만 출력해주면 돼`
+                }]  
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Analysis API Response:", data);
+            setEmotionalScore(data.choices[0].message.content);
+        })
+        .catch((error) => {
+            console.error("Error in callGPTAnalysis:", error);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+    }
+
+    // callGPTReason 함수
+    function callGPTReason(prompt) {
+        setIsLoading(true);
+        return fetch(ENDPOINT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GPT_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "user",
+                    content: `${prompt}라는 일기의 감정 점수를 매길건데 일기속 드러나는 감정적인 부분에서 일기를 분석하고 점수를 책정해줘 긍적적인 감정과 부정적인 감정이 어디서 나타났는지 설명해줘, 대신 점수는 생략하고 일기 점수를 책정한 근거를 줄 글로 보여줘. 말투는 ~니다로 해줘`
+                }]  
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("AnalysisReason API Response:", data);
+            setAnalysisReason(data.choices[0].message.content);
+        })
+        .catch((error) => {
+            console.error("Error in AnalysisReason:", error);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+    }
+
+    // callGPTSolution 함수
+    function callGPTSolution(prompt) {
+        setIsLoading(true);
+        return fetch(ENDPOINT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GPT_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "user",
+                    content: `${prompt}라는 일기 속에서 부정적인 감정을 해소하려면 어떻게 해야하는지, 긍정적인 감정을 강화하려면 어떻게 해야하는지 일기 속의 내용을 근거로 감정적인 부분에서 피드백 해줘. 글은 줄 글로 보여줘주고 말투는 ~니다로 해줘`
+                }]  
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("AnalysisSolution API Response:", data);
+            setAnalysisSolution(data.choices[0].message.content);
+        })
+        .catch((error) => {
+            console.error("Error in AnalysisSolution:", error);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+    }
+
+    const loadingText = "일기를 분석 중입니다.";
+    const animatedLoadingText = loadingText.split("").map((char, index) => (
+        <span key={index} style={{ "--i": index }}>{char === " " ? "\u00A0" : char}</span>
+    ));
 
     return (
 
@@ -190,7 +321,7 @@ function DailyWrite(props) {
                 <Wrapper>
 
                     <LoadingContainer>
-                        <LoadingText>하루를 분석중입니다.</LoadingText>
+                        <LoadingText>{animatedLoadingText}</LoadingText>
                     </LoadingContainer>
                     
                     <Header></Header>

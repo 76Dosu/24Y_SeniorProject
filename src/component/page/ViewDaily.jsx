@@ -39,6 +39,7 @@ const ContentsFrame = styled.div`
 function ViewDaily() {
 
     const [data, setData] = useState([]);
+    const [averageScore, setAverageScore] = useState(0); // 평균 점수를 위한 상태 추가
     const navigate = useNavigate();
 
     useEffect(function() {
@@ -49,7 +50,12 @@ function ViewDaily() {
                 tempData.push(doc.data()) // <<===== doc마다 tempData를 배열에 추가
             })
 
+            tempData.reverse();
             setData(tempData);
+
+            const totalScore = tempData.reduce((sum, item) => sum + (item.score ? parseInt(item.score, 10) : 0), 0);
+            const avgScore = tempData.length > 0 ? (totalScore / tempData.length).toFixed(0) : 0;
+            setAverageScore(avgScore); // 평균 점수를 상태에 저장
         })
     }, [])
 
@@ -60,7 +66,7 @@ function ViewDaily() {
 
             
             <TitleFrame>
-                <Title text="현재 감정점수는 61점입니다."></Title>
+                <Title text={"현재 감정점수는 " + averageScore + "점입니다."}></Title>
             </TitleFrame>
 
             <DivideLine></DivideLine>
