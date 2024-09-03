@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
+import { storage, functions } from "../../firebase"; // storage, functions 추가
 
 import { db } from "../../firebase"
 
@@ -145,6 +146,21 @@ function ChoicePicture() {
     const [imageUrlB, setImageUrlB] = useState('');
     const [imageUrlC, setImageUrlC] = useState('');
 
+    const uploadImageToFirebase = async (imageUrl: string) => {
+        try {
+          const response = await fetch(imageUrl);
+          const blob = await response.blob();
+          const storageRef = storage.ref();
+          const fileRef = storageRef.child(`images/${Date.now()}.png`);
+          await fileRef.put(blob);
+          const downloadURL = await fileRef.getDownloadURL();
+          return downloadURL;
+        } catch (error) {
+          console.error("Error uploading image to Firebase:", error);
+          throw new Error("Image upload failed");
+        }
+      };
+
     const generateImage = useCallback(async (style) => {
         try {
             const response = await fetch('https://api.openai.com/v1/images/generations', {
@@ -158,18 +174,19 @@ function ChoicePicture() {
                     prompt: `${location.state.results}를 대표하는 그림을 ${style} 스타일로 컷 없이 한 장으로 그려줘`,
                     n: 1,
                     size: '1024x1024',
-                    response_format: 'b64_json'
                 })
             });
 
+            // DALLE-3 이미지 URL
             const data = await response.json();
-
+            const imageUrl = data.data[0].url;
             console.log(data)
 
-            return `data:image/jpeg;base64,${data.data[0].b64_json}`;
+            const downloadURL = await uploadImageToFirebase(imageUrl)
+            return downloadURL;
         } catch (error) {
             console.error('Error generating image:', error);
-            return '';
+            throw new Error('Image generation failed');
         }
     }, [location.state.results, GPT_API_KEY]);
 
