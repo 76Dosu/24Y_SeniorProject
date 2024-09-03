@@ -157,12 +157,16 @@ function ChoicePicture() {
                     model: "dall-e-3",
                     prompt: `${location.state.results}를 대표하는 그림을 ${style} 스타일로 컷 없이 한 장으로 그려줘`,
                     n: 1,
-                    size: '1024x1024'
+                    size: '1024x1024',
+                    response_format: 'b64_json'
                 })
             });
 
             const data = await response.json();
-            return data.data[0].url;
+
+            console.log(data)
+
+            return `data:image/jpeg;base64,${data.data[0].b64_json}`;
         } catch (error) {
             console.error('Error generating image:', error);
             return '';
@@ -173,17 +177,17 @@ function ChoicePicture() {
         const loadImages = async () => {
             setIsLoading(true);
 
-            const [urlA, urlB, urlC] = await Promise.all([
+            const [base64A, base64B, base64C] = await Promise.all([
                 generateImage('사실적인'),
                 generateImage('일러스트'),
                 generateImage('창의적인')
             ]);
 
-            setImageUrlA(urlA);
-            setImageUrlB(urlB);
-            setImageUrlC(urlC);
+            setImageUrlA(base64A);
+            setImageUrlB(base64B);
+            setImageUrlC(base64C);
 
-            setChoosedImageUrl(urlB);
+            setChoosedImageUrl(base64B);
             setIsLoading(false);  // 모든 이미지가 로드된 후 로딩 상태를 해제
         };
 
@@ -238,7 +242,7 @@ function ChoicePicture() {
                         <SubText>김희찬님의 {myTime}일 하루를 바탕으로 생성된 이미지입니다.</SubText>
                     </TitleFrame>
 
-                    <GenImageFrame>
+                    <GenImageFrame>         
                         <InputFrame onClick={imageClick(imageUrlA)}>
                             <GenImage imgURL={imageUrlA} isSelected={choosedImageUrl === imageUrlA} />
                             <Label htmlFor="imgA"></Label>
