@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { db } from "../../firebase"
 
 //ui
@@ -39,9 +40,30 @@ const ContentsFrame = styled.div`
 function ViewDaily() {
 
     const [data, setData] = useState([]);
+    const [url, setUrl] = useState([]);
     const [averageScore, setAverageScore] = useState(0); // 평균 점수를 위한 상태 추가
     const navigate = useNavigate();
 
+    // Firebase
+    const storage = getStorage();
+    const listRef = ref(storage, 'images/');
+
+    useEffect(() => {
+        listAll(listRef)
+        .then((res) => {
+          res.items.forEach((itemRef) => {
+            // console.log(itemRef)
+    
+            getDownloadURL(ref(storage, itemRef))
+            .then((url) => {
+                console.log(url)
+                setUrl(url);
+            });
+          })    
+        })
+    }, []);
+    // 의존성 추가 시 콘솔 2번씩 찍히는 문제가 있음
+    
     useEffect(function() {
         let tempData = [];
 
@@ -57,7 +79,7 @@ function ViewDaily() {
             const avgScore = tempData.length > 0 ? (totalScore / tempData.length).toFixed(0) : 0;
             setAverageScore(avgScore); // 평균 점수를 상태에 저장
         })
-    }, [])
+    }, [storage])
 
     return (
         
@@ -72,7 +94,7 @@ function ViewDaily() {
             <DivideLine></DivideLine>
 
             <ContentsFrame>
-                <DailyList posts={data} onClickItem={(p) => {navigate('/post/' + p.id)}}></DailyList>
+                <DailyList imgUrl={url} posts={data} onClickItem={(p) => {navigate('/post/' + p.id)}}></DailyList>
             </ContentsFrame>
 
         </Wrapper>

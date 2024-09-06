@@ -135,7 +135,7 @@ function ChoicePicture() {
 
     // firebase
     const storage = getStorage();
-    const storageRef = ref(storage, location.state.timestamp);
+    const storageRef = ref(storage, `images/${location.state.timestamp}`);
 
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
