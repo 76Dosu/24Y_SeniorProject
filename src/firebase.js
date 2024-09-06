@@ -16,4 +16,4 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 // Firestore 초기화
 const db = firebaseApp.firestore();
 
-export {firebase, firebaseApp, db};
+export { firebase, firebaseApp, db };
