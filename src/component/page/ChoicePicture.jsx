@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-import { storage, functions } from "../../firebase"; // storage, functions 추가
-
-import { db } from "../../firebase"
+import { db } from "../../firebase";
 
 //ui
 import Header from "../ui/Header";
@@ -146,21 +144,6 @@ function ChoicePicture() {
     const [imageUrlB, setImageUrlB] = useState('');
     const [imageUrlC, setImageUrlC] = useState('');
 
-    const uploadImageToFirebase = async (imageUrl: string) => {
-        try {
-          const response = await fetch(imageUrl);
-          const blob = await response.blob();
-          const storageRef = storage.ref();
-          const fileRef = storageRef.child(`images/${Date.now()}.png`);
-          await fileRef.put(blob);
-          const downloadURL = await fileRef.getDownloadURL();
-          return downloadURL;
-        } catch (error) {
-          console.error("Error uploading image to Firebase:", error);
-          throw new Error("Image upload failed");
-        }
-      };
-
     const generateImage = useCallback(async (style) => {
         try {
             const response = await fetch('https://api.openai.com/v1/images/generations', {
@@ -182,8 +165,7 @@ function ChoicePicture() {
             const imageUrl = data.data[0].url;
             console.log(data)
 
-            const downloadURL = await uploadImageToFirebase(imageUrl)
-            return downloadURL;
+            return imageUrl;
         } catch (error) {
             console.error('Error generating image:', error);
             throw new Error('Image generation failed');
@@ -224,14 +206,18 @@ function ChoicePicture() {
         };
     };
 
-    const SubmitImage = () => {
-
-        db.collection('daily').doc(location.state.timestamp).update({
+    const SubmitImage = async () => {
+        try {
+          // Firestore에 Base64 이미지 저장
+          db.collection("daily").doc(location.state.timestamp).update({
             choosedImage: choosedImageUrl,
-        })
-
-        navigate('/')
-    }
+          });
+    
+          navigate("/");
+        } catch (error) {
+          console.error("Error submitting image:", error);
+        }
+      };
 
     const loadingText = "이미지를 생성 중입니다.";
     const animatedLoadingText = loadingText.split("").map((char, index) => (

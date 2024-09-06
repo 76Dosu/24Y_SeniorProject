@@ -1,8 +1,6 @@
 import firebase from "firebase/compat/app";
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import 'firebase/compat/storage';  // Firebase Storage 추가
-import 'firebase/compat/functions'; // Firebase Functions 추가
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FB_API_KEY,
@@ -18,10 +16,4 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 // Firestore 초기화
 const db = firebaseApp.firestore();
 
-// Storage 초기화
-const storage = firebaseApp.storage();  // Firebase Storage 초기화
-
-// Functions 초기화
-const functions = firebaseApp.functions();  // Firebase Functions 초기화
-
-export {firebase, firebaseApp, db, storage, functions}; // Storage와 Functions를 추가로 export
+export {firebase, firebaseApp, db};
