@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-import { db } from "../../firebase";
+
+// import { db } from "../../firebase";
+import { getStorage, ref, uploadString } from "firebase/storage";
 
 //ui
 import Header from "../ui/Header";
@@ -128,13 +130,18 @@ const LoadingText = styled.p`
 
 function ChoicePicture() {
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // firebase
+    const storage = getStorage();
+    const storageRef = ref(storage, `images/${location.state.timestamp}`);
+
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
     let day = new Date().getDate();
     let myTime = `${year}.${month + 1}.${day}`;
-
-    const navigate = useNavigate();
-    const location = useLocation();
+    
     const [isLoading, setIsLoading] = useState(false);
 
     // 이미지 생성
@@ -143,6 +150,11 @@ function ChoicePicture() {
     const [imageUrlA, setImageUrlA] = useState('');
     const [imageUrlB, setImageUrlB] = useState('');
     const [imageUrlC, setImageUrlC] = useState('');
+
+    // Base64 데이터를 Base64url로 변환하는 함수
+    const base64ToBase64url = (base64) => {
+        return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    };
 
     const generateImage = useCallback(async (style) => {
         try {
@@ -157,15 +169,15 @@ function ChoicePicture() {
                     prompt: `${location.state.results}를 대표하는 그림을 ${style} 스타일로 컷 없이 한 장으로 그려줘`,
                     n: 1,
                     size: '1024x1024',
+                    response_format: "b64_json",
                 })
             });
 
             // DALLE-3 이미지 URL
             const data = await response.json();
-            const imageUrl = data.data[0].url;
             console.log(data)
 
-            return imageUrl;
+            return `data:image/jpeg;base64,${data.data[0].b64_json}`
         } catch (error) {
             console.error('Error generating image:', error);
             throw new Error('Image generation failed');
@@ -208,16 +220,26 @@ function ChoicePicture() {
 
     const SubmitImage = async () => {
         try {
-          // Firestore에 Base64 이미지 저장
-          db.collection("daily").doc(location.state.timestamp).update({
-            choosedImage: choosedImageUrl,
-          });
+            // Base64 데이터를 Base64url 형식으로 변환하기 전에 접두어를 제거
+            const base64WithoutPrefix = choosedImageUrl.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
     
-          navigate("/");
+            // Base64 데이터를 Base64url 형식으로 변환
+            const base64urlChoosedImage = base64ToBase64url(base64WithoutPrefix);
+    
+            // Firebase Storage에 Base64url 데이터 업로드
+            await uploadString(storageRef, base64urlChoosedImage, 'base64url');
+            console.log('Uploaded a base64url string!');
+    
+            // Firestore에 Base64 이미지 저장 (코멘트 처리됨)
+            // db.collection("daily").doc(location.state.timestamp).update({
+            //     choosedImage: base64urlChoosedImage,
+            // });
+    
+            navigate("/");
         } catch (error) {
-          console.error("Error submitting image:", error);
+            console.error("Error submitting image:", error);
         }
-      };
+    };
 
     const loadingText = "이미지를 생성 중입니다.";
     const animatedLoadingText = loadingText.split("").map((char, index) => (

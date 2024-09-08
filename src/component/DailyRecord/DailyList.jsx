@@ -13,15 +13,15 @@ const Wrapper = styled.div`
 
 function DailyList(props) {
 
-    const { posts, onClickItem } = props;
+    const { posts, onClickItem, imgUrl } = props;
     
     return (
         
         <Wrapper>
-            {posts.map(post => {
+            {posts.map((post, index) => {
 
                 return (
-                    <DailyItems key={post.id} post={post} onClick={() => onClickItem(post)}></DailyItems>
+                    <DailyItems key={post.id} post={post} imgUrl={imgUrl[index]} onClick={() => onClickItem(post)}></DailyItems>
                 );
 
             })}

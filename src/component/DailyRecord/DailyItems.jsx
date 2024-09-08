@@ -54,7 +54,7 @@ const DailyWriteTime = styled.p`
 
 function DailyItems(props) {
 
-    const { post } = props;
+    const { post, imgUrl } = props;
     const navigate = useNavigate();
 
     const testClick = () => {
@@ -66,7 +66,7 @@ function DailyItems(props) {
     return (
         
         <Wrapper onClick={testClick}>
-            <DailyImage src={post.choosedImage}/>
+            <DailyImage src={imgUrl}/>
 
             <DailyInfoContainer>
                 <DailyTItle>{post.title}</DailyTItle>
