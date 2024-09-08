@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
 
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { db } from '../../firebase'
 
 import Header from "../ui/Header";
@@ -56,7 +57,7 @@ const DailyContentsTitle = styled.p`
     color:white;
 `
 
-const DailyKeywordFrame = styled.p`
+const DailyKeywordFrame = styled.div`
     width:fit-content;
     display:flex;
     align-items: center;
@@ -84,7 +85,7 @@ const DailyContents = styled.p`
 `
 
 const DailyImage = styled.img`
-    width:50%;
+    width:100%;
     border-radius:8px;
     margin-top:60px;
 `
@@ -110,40 +111,62 @@ const DailyAnalysisItem = styled.div`
 function DailyDetailView() {
 
     const postId = useParams().id;
-
     const [post, setPost] = useState({
-        id : "",
+        id: "",
         date: "",
         choosedImage: "",
         keyword: "",
         prompt: "",
-        title : "",
-        score : "",
-        reason : "",
-        solution : ""
+        title: "",
+        score: "",
+        reason: "",
+        solution: ""
     })
 
-    useEffect(() => {
-        db.collection('daily').doc(postId).get().then(function(doc) {
-            setPost(doc.data())
+    const [base64Url, setBase64Url] = useState('');
+    const storage = getStorage();
+    const listRef = ref(storage, 'images/');
 
+    useEffect(() => {
+        listAll(listRef)
+            .then((res) => {
+                res.items.forEach((itemRef) => {
+
+                    if (itemRef.name === `${postId}`) {
+                        getDownloadURL(itemRef).then((url) => {
+                            setBase64Url(url);
+                        }).catch((error) => {
+                            console.error("Error getting download URL: ", error);
+                        });
+                    }
+                });
+            })
+            .catch((error) => {
+                console.error("Error listing images: ", error);
+            });
+    }, [listRef, postId]); // postId가 변경될 때마다 useEffect 실행
+
+    useEffect(() => {
+        db.collection('daily').doc(postId).get().then(function (doc) {
+            setPost(doc.data())
             setKeywordArray(doc.data().keyword.split(',').map(item => item.trim()));
+
         })
-    },[postId]);
+    }, [postId]);
 
     const [keywordArray, setKeywordArray] = useState([]);
 
 
     return (
-        
+
         <Wrapper>
 
-            <Header/>
-            
+            <Header />
+
             <TitleFrame>
-                
+
                 <DailyScore>일기 점수 {post.score}점</DailyScore>
-                <Title text={post.title}/>
+                <Title text={post.title} />
                 <DailyKeywordFrame>
                     <DailyKeyword>{keywordArray[0]}</DailyKeyword>
                     <DailyKeyword>{keywordArray[1]}</DailyKeyword>
@@ -156,12 +179,12 @@ function DailyDetailView() {
 
             <ContentsContainer>
 
-                
+
                 {/* 일기 내용 */}
                 <DailyContainer>
                     <DailyContentsTitle>일기 내용</DailyContentsTitle>
                     <DailyContents>{post.prompt}</DailyContents>
-                    <DailyImage src={post.choosedImage}/>
+                    <DailyImage src={base64Url} />
                 </DailyContainer>
 
                 {/* 일기 분석 내용 */}
@@ -178,14 +201,14 @@ function DailyDetailView() {
                         <DailyContentsTitle>감정 피드백</DailyContentsTitle>
                         <DailyContents>{post.solution}</DailyContents>
                     </DailyAnalysisItem>
-                    
+
                 </DailyAnalContainer>
 
             </ContentsContainer>
 
         </Wrapper>
-        
-    )   
+
+    )
 
 }
 

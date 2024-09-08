@@ -61,7 +61,7 @@ function ViewDaily() {
                 Promise.all(urlPromises)
                     .then((urlArray) => {
                         setUrl(urlArray.reverse()); // URL 배열 상태에 저장
-                    });
+                });
             })
             .catch((error) => {
                 console.error("Error listing images: ", error);
