@@ -21,7 +21,7 @@ function DailyList(props) {
             {posts.map((post, index) => {
 
                 return (
-                    <DailyItems key={post.id} post={post} imgUrl={imgUrl} onClick={() => onClickItem(post)}></DailyItems>
+                    <DailyItems key={post.id} post={post} imgUrl={imgUrl[index]} onClick={() => onClickItem(post)}></DailyItems>
                 );
 
             })}

@@ -49,21 +49,25 @@ function ViewDaily() {
     const listRef = ref(storage, 'images/');
 
     useEffect(() => {
+        // listAll()을 사용하여 디렉터리의 파일 목록 가져오기
         listAll(listRef)
-        .then((res) => {
-          res.items.forEach((itemRef) => {
-            // console.log(itemRef)
-    
-            getDownloadURL(ref(storage, itemRef))
-            .then((url) => {
-                console.log(url)
-                setUrl(url);
+            .then((res) => {
+                // 각 파일의 URL을 가져오는 비동기 작업
+                const urlPromises = res.items.map((itemRef) => 
+                    getDownloadURL(itemRef) // 각 파일의 다운로드 URL을 가져옴
+                );
+                
+                // 모든 URL이 받아질 때까지 기다림
+                Promise.all(urlPromises)
+                    .then((urlArray) => {
+                        setUrl(urlArray.reverse()); // URL 배열 상태에 저장
+                    });
+            })
+            .catch((error) => {
+                console.error("Error listing images: ", error);
             });
-          })    
-        })
-    }, []);
-    // 의존성 추가 시 콘솔 2번씩 찍히는 문제가 있음
-    
+    }, [listRef, storage]);
+
     useEffect(function() {
         let tempData = [];
 
