@@ -211,8 +211,8 @@ function ChoicePicture() {
         return () => {
             setChoosedImageUrl(url);
 
-            console.log(location.state.timestamp);
-            console.log(choosedImageUrl);
+            // console.log(location.state.timestamp);
+            // console.log(choosedImageUrl);
         };
     };
 

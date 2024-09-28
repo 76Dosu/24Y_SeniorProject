@@ -197,7 +197,7 @@ function DailyWrite(props) {
                 'Authorization': `Bearer ${GPT_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
                     content: `${prompt}라는 내용의 일기를 요약할 수 있는 키워드 5개를 순서없이 한줄에 나열해줘. 연결은 콤마로 해줘`
@@ -227,7 +227,7 @@ function DailyWrite(props) {
                 'Authorization': `Bearer ${GPT_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
                     content: `${prompt}라는 일기에 대해서 일기속 드러나는 감정에 대해서 점수로 내줘. 부정적인 감정이 많으면 점수를 낮게 줘도 돼 100점 만점이고 "80"처럼 숫자만 출력해주면 돼`
@@ -257,7 +257,7 @@ function DailyWrite(props) {
                 'Authorization': `Bearer ${GPT_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
                     content: `${prompt}라는 일기의 감정 점수를 매길건데 일기속 드러나는 감정적인 부분에서 일기를 분석하고 점수를 책정해줘 긍적적인 감정과 부정적인 감정이 어디서 나타났는지 설명해줘, 대신 점수는 생략하고 일기 점수를 책정한 근거를 100자 아래로 줄 글로 보여줘. 말투는 ~니다로 해줘`
@@ -287,7 +287,7 @@ function DailyWrite(props) {
                 'Authorization': `Bearer ${GPT_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
                     content: `${prompt}라는 일기 속에서 부정적인 감정을 해소하려면 어떻게 해야하는지, 긍정적인 감정을 강화하려면 어떻게 해야하는지 일기 속의 내용을 근거로 감정적인 부분에서 피드백 해줘. 글은 100자 아래로 줄 글로 보여줘주고 말투는 ~니다로 해줘`
@@ -317,10 +317,10 @@ function DailyWrite(props) {
                 'Authorization': `Bearer ${GPT_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
-                    content: `${prompt}라는 일기내용을 가지고 위로카드를 작성할거야. 줄글로 100자가 넘지않게 사용자가 나중에 이 카드를 보고 '나한테 이런 일들이 있었지하고 회상할 수 있게끔' 과거 시제로 위로 카드를 작성해줘`
+                    content: `${prompt}라는 일기를 통해 줄글로 50자정도 무슨 일이 있었고 어떤 긍정적 경험이 있었는지 회상할 수 있는 문구를 작성해줘, 말투는 ~니다로 해주고 너가 작성한 내용은 사용자가 나중에 볼 내용들이고 제 3자의 입장에서 적어줘야 해. 추가적으로, 오늘은이나 그날은, 오늘 등 날짜를 특정할 수 있는 단어들은 제거해줘`
                 }]  
             })
         })
