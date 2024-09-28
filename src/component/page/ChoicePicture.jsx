@@ -151,7 +151,6 @@ function ChoicePicture() {
     const [imageUrlB, setImageUrlB] = useState('');
     const [imageUrlC, setImageUrlC] = useState('');
 
-    // Base64 데이터를 Base64url로 변환하는 함수
     const base64ToBase64url = (base64) => {
         return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     };
@@ -175,7 +174,6 @@ function ChoicePicture() {
 
             // DALLE-3 이미지 URL
             const data = await response.json();
-            console.log(data)
 
             return `data:image/jpeg;base64,${data.data[0].b64_json}`
         } catch (error) {
@@ -220,21 +218,10 @@ function ChoicePicture() {
 
     const SubmitImage = async () => {
         try {
-            // Base64 데이터를 Base64url 형식으로 변환하기 전에 접두어를 제거
             const base64WithoutPrefix = choosedImageUrl.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
-    
-            // Base64 데이터를 Base64url 형식으로 변환
             const base64urlChoosedImage = base64ToBase64url(base64WithoutPrefix);
     
-            // Firebase Storage에 Base64url 데이터 업로드
             await uploadString(storageRef, base64urlChoosedImage, 'base64url');
-            console.log('Uploaded a base64url string!');
-    
-            // Firestore에 Base64 이미지 저장 (코멘트 처리됨)
-            // db.collection("daily").doc(location.state.timestamp).update({
-            //     choosedImage: base64urlChoosedImage,
-            // });
-    
             navigate("/");
         } catch (error) {
             console.error("Error submitting image:", error);

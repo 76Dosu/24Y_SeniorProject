@@ -121,6 +121,7 @@ function DailyWrite(props) {
     const [emotionalScore, setEmotionalScore] = useState("");// callGPTAnalysis
     const [analysisReason, setAnalysisReason] = useState(""); // callGPTReason
     const [analysisSolution, setAnalysisSolution] = useState(""); // callGPTSolution
+    const [tarot, setTarot] = useState(""); // callGPTTarot
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -151,10 +152,11 @@ function DailyWrite(props) {
             score: emotionalScore,
             reason: analysisReason,
             solution: analysisSolution,
+            tarot: tarot,
         });
     
         navigate('/choicePicture', { state: { timestamp, results } }); 
-    }, [title, prompt, results, emotionalScore, analysisReason, analysisSolution, navigate]); // 필요한 의존성 추가
+    }, [title, prompt, results, emotionalScore, analysisReason, analysisSolution, tarot, navigate]); // 필요한 의존성 추가
 
     const handleClick = async (e) => {
         try {
@@ -163,6 +165,7 @@ function DailyWrite(props) {
             await callGPTAnalysis(prompt);
             await callGPTReason(prompt);
             await callGPTSolution(prompt);
+            await callGPTTarot(prompt);
             
             setIsSubmitted(true);
 
@@ -257,7 +260,7 @@ function DailyWrite(props) {
                 model: "gpt-3.5-turbo",
                 messages: [{
                     role: "user",
-                    content: `${prompt}라는 일기의 감정 점수를 매길건데 일기속 드러나는 감정적인 부분에서 일기를 분석하고 점수를 책정해줘 긍적적인 감정과 부정적인 감정이 어디서 나타났는지 설명해줘, 대신 점수는 생략하고 일기 점수를 책정한 근거를 줄 글로 보여줘. 말투는 ~니다로 해줘`
+                    content: `${prompt}라는 일기의 감정 점수를 매길건데 일기속 드러나는 감정적인 부분에서 일기를 분석하고 점수를 책정해줘 긍적적인 감정과 부정적인 감정이 어디서 나타났는지 설명해줘, 대신 점수는 생략하고 일기 점수를 책정한 근거를 100자 아래로 줄 글로 보여줘. 말투는 ~니다로 해줘`
                 }]  
             })
         })
@@ -287,7 +290,7 @@ function DailyWrite(props) {
                 model: "gpt-3.5-turbo",
                 messages: [{
                     role: "user",
-                    content: `${prompt}라는 일기 속에서 부정적인 감정을 해소하려면 어떻게 해야하는지, 긍정적인 감정을 강화하려면 어떻게 해야하는지 일기 속의 내용을 근거로 감정적인 부분에서 피드백 해줘. 글은 줄 글로 보여줘주고 말투는 ~니다로 해줘`
+                    content: `${prompt}라는 일기 속에서 부정적인 감정을 해소하려면 어떻게 해야하는지, 긍정적인 감정을 강화하려면 어떻게 해야하는지 일기 속의 내용을 근거로 감정적인 부분에서 피드백 해줘. 글은 100자 아래로 줄 글로 보여줘주고 말투는 ~니다로 해줘`
                 }]  
             })
         })
@@ -298,6 +301,36 @@ function DailyWrite(props) {
         })
         .catch((error) => {
             console.error("Error in AnalysisSolution:", error);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+    }
+
+    // callGPTTarot 함수
+    function callGPTTarot(prompt) {
+        setIsLoading(true);
+        return fetch(ENDPOINT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GPT_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "user",
+                    content: `${prompt}라는 일기내용을 가지고 위로카드를 작성할거야. 줄글로 100자가 넘지않게 사용자가 나중에 이 카드를 보고 '나한테 이런 일들이 있었지하고 회상할 수 있게끔' 과거 시제로 위로 카드를 작성해줘`
+                }]  
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Tarot API Response:", data);
+            setTarot(data.choices[0].message.content);
+        })
+        .catch((error) => {
+            console.error("Error in Tarot:", error);
         })
         .finally(() => {
             setIsLoading(false);
