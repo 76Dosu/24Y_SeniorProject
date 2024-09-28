@@ -9,6 +9,7 @@ import DailyWrite from './component/page/DailyWrite';
 import ChoicePicture from './component/page/ChoicePicture';
 import ViewDaily from './component/page/ViewDaily';
 import DailyDetailView from './component/page/DailyDetailView';
+import Tarot from './component/page/Taort';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +20,8 @@ root.render(
             <Route path="/choicePicture" element={<ChoicePicture />}></Route>
             <Route path="/viewDaily" element={<ViewDaily />}></Route>
             <Route path="/post/:id" element={<DailyDetailView />}></Route>
+
+            <Route path="/tarot" element={<Tarot />}></Route>
         </Routes>
     </BrowserRouter>
 );

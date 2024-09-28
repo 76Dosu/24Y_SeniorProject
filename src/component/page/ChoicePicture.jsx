@@ -222,7 +222,7 @@ function ChoicePicture() {
             const base64urlChoosedImage = base64ToBase64url(base64WithoutPrefix);
     
             await uploadString(storageRef, base64urlChoosedImage, 'base64url');
-            navigate("/");
+            navigate(`/post/${location.state.timestamp}`);
         } catch (error) {
             console.error("Error submitting image:", error);
         }

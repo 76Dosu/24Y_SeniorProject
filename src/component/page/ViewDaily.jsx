@@ -83,7 +83,7 @@ function ViewDaily() {
             const avgScore = tempData.length > 0 ? (totalScore / tempData.length).toFixed(0) : 0;
             setAverageScore(avgScore); // 평균 점수를 상태에 저장
         })
-    }, [storage])
+    }, [])
 
     return (
         

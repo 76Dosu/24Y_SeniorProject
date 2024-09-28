@@ -154,6 +154,16 @@ function DailyWrite(props) {
             solution: analysisSolution,
             tarot: tarot,
         });
+
+        if (emotionalScore >= 80) {
+            db.collection('tarot').doc(timestamp).set({
+                id: timestamp,
+                title: title,
+                prompt: prompt,
+                date: myTime,
+                tarot: tarot,
+            });
+        }
     
         navigate('/choicePicture', { state: { timestamp, results } }); 
     }, [title, prompt, results, emotionalScore, analysisReason, analysisSolution, tarot, navigate]); // 필요한 의존성 추가

@@ -4,8 +4,6 @@ import styled from "styled-components";
 //ui
 import DailyItems from '../DailyRecord/DailyItems.jsx'
 
-//image
-
 //styled
 const Wrapper = styled.div`
     width:100%;
