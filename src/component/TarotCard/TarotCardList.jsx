@@ -4,21 +4,14 @@ import styled from "styled-components";
 //ui
 import TarotCard from "./TarotCard.jsx";
 
-function TarotCardList({ posts, setSelectedCount }) {
-
-    const [selectedCards, setSelectedCards] = useState([]); // 선택한 카드 ID를 추적하는 배열
+function TarotCardList({ posts, selectedCards, onCardSelect }) {
     const [isShaking, setIsShaking] = useState(false); // 카드를 흔들기 위한 상태
 
     const handleCardSelect = (post) => {
         if (selectedCards.includes(post.id)) {
-            const newSelectedCards = selectedCards.filter(id => id !== post.id);
-            setSelectedCards(newSelectedCards);
-            setSelectedCount(newSelectedCards.length); 
-            
+            onCardSelect(post.id); // 카드 선택 해제
         } else if (selectedCards.length < 3) {
-            const newSelectedCards = [...selectedCards, post.id];
-            setSelectedCards(newSelectedCards);
-            setSelectedCount(newSelectedCards.length);
+            onCardSelect(post.id); // 카드 선택
         } else {
             // 3개가 이미 선택된 경우에는 흔들림 애니메이션 실행
             setIsShaking(true);
@@ -56,10 +49,9 @@ const Wrapper = styled.div`
 `;
 
 const DisplayContainer = styled.div`
-    width:fit-content;
-    display:flex;
-    /* margin-top:40px; */
-    gap:16px;
+    width: fit-content;
+    display: flex;
+    gap: 16px;
 `;
 
 export default TarotCardList;
