@@ -1,105 +1,47 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-
+import React from "react";
+import styled, { keyframes, css } from "styled-components";
 import LogoImage from '../../images/logo-icon.png'
 
+// 흔들리는 애니메이션 정의
+const shake = keyframes`
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+`;
+
 function TarotCard(props) {
-
-    const [isFlipped, setIsFlipped] = useState(false);
-    const { post } = props;
-
-    const CardClick = () => {
-        setIsFlipped(!isFlipped);
-    };
+    const { onSelect, isSelected, isShaking } = props; // 선택 시 호출되는 함수와 선택 여부, 흔들림 여부를 props로 받음
 
     return (
-        
-        <CardContainer onClick={CardClick}>
-            <CardInner isFlipped={isFlipped}>
-
-                {/* 카드 앞면 */}
-                <CardFront>
-                    <TarotCardLogoImg src={LogoImage} />
-                </CardFront>
-
-                {/* 카드 뒷면 */}
-                <CardBack>
-                    <CardDate>{post.date}</CardDate>
-                    <CardTitle>{post.title}</CardTitle>
-                    <CardContents>{post.tarot}</CardContents>
-                </CardBack>
-            </CardInner>
+        <CardContainer onClick={onSelect} isSelected={isSelected} isShaking={isShaking}>
+            <TarotCardLogoImg src={LogoImage} />
         </CardContainer>
-
-    )   
-
+    );
 }
 
+//styled
 const CardContainer = styled.div`
     perspective: 1000px;
-    width: 200px;
-    height: 300px;
-`;
-
-const CardInner = styled.div`
-    width: 100%;
-    height: 100%;
-
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
-    transform: ${({ isFlipped }) => isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
-`;
-
-const CardFront = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    backface-visibility: hidden;
+    width: 180px;
+    height: 240px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background-color: #2B3034;
+    background-color: ${({ isSelected }) => (isSelected ? "#FFDD57" : "#2B3034")}; // 선택 여부에 따라 색상 변경
     border-radius: 12px;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    ${({ isShaking }) => 
+        isShaking &&
+        css`
+            animation: ${shake} 0.5s ease;
+        `
+    }; // 흔들리는 애니메이션 조건부 적용
 `;
-
-const CardBack = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    padding:20px;
-
-
-    backface-visibility: hidden;
-    transform: rotateY(180deg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    background-color: #333;
-    color: white;
-    border-radius: 12px;
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.12);
-`;
-
-const CardDate = styled.p`
-    font-size: 12px;
-`
-
-const CardTitle = styled.p`
-    font-size: 16px;
-`
-
-const CardContents = styled.p`
-    font-size: 12px;
-    text-align:justify;
-    line-height:1.4;
-`
 
 const TarotCardLogoImg = styled.img`
     width: 30%;
