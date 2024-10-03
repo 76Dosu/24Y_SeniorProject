@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const TitleText = styled.p`
     font-size: 32px;
-    font-weight:400;
+    font-weight:600;
     color:white;
 `
 

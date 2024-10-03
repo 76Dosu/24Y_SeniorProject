@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     display:flex;
     align-items:center;
     padding:20px 0;
+    width:100%;
 `
 
 const HeaderLogo = styled.img`
