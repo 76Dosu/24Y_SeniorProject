@@ -226,6 +226,8 @@ function ChoicePicture() {
     
             await uploadString(storageRef, base64urlChoosedImage, 'base64url');
             navigate(`/post/${location.state.timestamp}`);
+
+            
         } catch (error) {
             console.error("Error submitting image:", error);
         }

@@ -83,7 +83,7 @@ function Tarot(props) {
                 {/* ChoiceCard */}
                 <ChoiceCardWrapper>
                     <CardCount>({selectedCards.length}/3)</CardCount>
-                    <Title text="타로 카드 3장을 골라주세요!" />
+                    <Title text="카드 3장을 골라주세요!" />
 
                     <TarotCardList
                         posts={data}
@@ -92,7 +92,7 @@ function Tarot(props) {
                     />
 
                     <EntireButtonFrame>
-                        <WriteButtonFrame onClick={() => navigate('/viewDaily')}>
+                        <WriteButtonFrame onClick={() => navigate(-1)}>
                             <WriteButtonUF buttonName="이전으로"></WriteButtonUF>
                         </WriteButtonFrame>
 

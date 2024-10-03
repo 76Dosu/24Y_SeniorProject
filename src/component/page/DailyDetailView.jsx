@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
 
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { db } from '../../firebase'
@@ -81,13 +82,13 @@ const DailyContents = styled.p`
     line-height:1.8;
     color:#DDDDDD;
 
-    margin:24px 0px 0px 0px;
+    margin:12px 0px 0px 0px;
 `
 
 const DailyImage = styled.img`
     width:100%;
     border-radius:8px;
-    margin-top:60px;
+    margin-top:40px;
 `
 
 // 일기 분석 내용
@@ -108,9 +109,22 @@ const DailyAnalysisItem = styled.div`
     }
 `
 
+const GoTarot = styled.p`
+    width:fit-content;
+    color:white;
+    font-size: 18px;
+    font-weight: bold;
+
+    border:1px solid white;
+    padding:16px 24px;
+    border-radius:50px;
+`
+
 function DailyDetailView() {
 
     const postId = useParams().id;
+    const navigate = useNavigate();
+
     const [post, setPost] = useState({
         id: "",
         date: "",
@@ -200,6 +214,9 @@ function DailyDetailView() {
                         <DailyContentsTitle>감정 피드백</DailyContentsTitle>
                         <DailyContents>{post.solution}</DailyContents>
                     </DailyAnalysisItem>
+
+                    {/* 타로 */}
+                    <GoTarot onClick={() => {navigate('/tarot')}}>타로 보기</GoTarot>
 
                 </DailyAnalContainer>
 

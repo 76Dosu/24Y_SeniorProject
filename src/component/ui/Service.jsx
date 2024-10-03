@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 const ServiceContainer = styled.div`
-    width: 326px;
-    height: 326px;
+    width: 300px;
+    height: 300px;
     background-color:${props => props.bc || "white"};
     border-radius:36px;
     box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.15);

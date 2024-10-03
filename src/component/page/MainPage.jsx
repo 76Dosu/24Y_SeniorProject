@@ -38,7 +38,7 @@ function MainPage() {
 
             <SubTitle text="오늘 하루는 어땠나요? 일기를 통해 하루를 기록해보세요!"
                       mt="12px"
-                      mb="120px">
+                      mb="80px">
 
             </SubTitle>
 
