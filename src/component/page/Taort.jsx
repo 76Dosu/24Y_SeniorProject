@@ -11,14 +11,17 @@ import SubTitle from "../ui/SubTitle"
 import WriteButtonF from "../ui/Button/WriteButtonF";
 import WriteButtonUF from "../ui/Button/WriteButtonUF";
 
+import LogoImage from '../../images/logo-icon.png';
+
 function Tarot(props) {
+
     const [selectedCards, setSelectedCards] = useState([]); // 선택한 카드 관리
+    const [flippedCards, setFlippedCards] = useState([]); // 각 카드의 뒤집힘 상태를 관리
     const [data, setData] = useState([]);
     const [imageUrls, setImageUrls] = useState({}); // 이미지 URL을 저장할 상태
     const [showViewCard, setShowViewCard] = useState(false); // 화면 전환 상태 추가
 
     const navigate = useNavigate();
-
     const storage = getStorage();
 
     // 데이터 받아오기
@@ -65,6 +68,15 @@ function Tarot(props) {
         }
     };
 
+    // 카드 뒤집기 처리
+    const handleCardFlip = (cardId) => {
+        setFlippedCards((prevFlippedCards) =>
+            prevFlippedCards.includes(cardId)
+                ? prevFlippedCards.filter(id => id !== cardId) // 이미 뒤집힌 카드를 다시 클릭하면 해제
+                : [...prevFlippedCards, cardId] // 새로 뒤집힌 카드 추가
+        );
+    };
+
     return (
         <Wrapper>
             <ContentContainer showViewCard={showViewCard}>
@@ -101,21 +113,30 @@ function Tarot(props) {
 
                             if (card) {
                                 const tarotArray = card.tarot.split(',').map(item => item.trim());
+                                const isFlipped = flippedCards.includes(cardId);
                                 const imageUrl = imageUrls[card.id]; // 이미지 URL 가져오기
 
                                 return (
-                                    <SelectedCard key={cardId}>
-                                        {/* 이미지 표시 */}
-                                        {imageUrl && (
-                                            <CardImage src={imageUrl} alt={card.title} />
-                                        )}
+                                    <SelectedCard key={cardId} onClick={() => handleCardFlip(cardId)} isFlipped={isFlipped}>
+                                        <CardInner isFlipped={isFlipped}>
+                                            <CardFront>
+                                                <TarotCardLogoImg src={LogoImage} />
+                                            </CardFront>
+                                            <CardBack>
+                                                {/* 이미지 표시 */}
+                                                {imageUrl && (
+                                                    <CardImage src={imageUrl} alt={card.title} />
+                                                )}
 
-                                        {/* 타로 핵심 내용 */}
-                                        {tarotArray.map((tarotItem, index) => (
-                                            <CardDescription key={index} isFirst={index === 0}>
-                                                {tarotItem}
-                                            </CardDescription>
-                                        ))}
+                                                {/* 타로 핵심 내용 */}
+                                                {tarotArray.map((tarotItem, index) => (
+                                                    <CardDescription key={index} isFirst={index === 0}>
+                                                        {tarotItem}
+                                                    </CardDescription>
+                                                ))}
+                                            </CardBack>
+                                        </CardInner>
+
                                     </SelectedCard>
                                 );
                             }
@@ -197,26 +218,53 @@ const ViewCardWrapper = styled.div`
 const SelectedCardsList = styled.div`
     display: flex;
     align-items: center;
-    gap:16px;
-
+    gap: 16px;
     margin-top: 40px;
 `;
 
 const SelectedCard = styled.div`
-    width:300px;
-    min-height:400px;
+    width: 300px;
+    min-height: 400px;
+    perspective: 1000px; /* 3D 효과를 위한 원근감 */
+    cursor: pointer;
+`;
+
+const CardInner = styled.div`
+    position: relative;
+    width: 100%;
+    height: 400px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s;
+    transform: ${({ isFlipped }) => (isFlipped ? "rotateY(180deg)" : "rotateY(0)")};
+`;
+
+const CardFront = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 400px;
+    backface-visibility: hidden; /* 앞면에 뒷면이 보이지 않도록 설정 */
+    background-color: #2B3034;
+    border-radius: 8px;
+    padding:20px;
+
     display:flex;
     align-items:center;
-    justify-content: center;
-    flex-direction:column;
+    justify-content:center;
+`;
 
-    color: white;
-    padding:16px;
+const CardBack = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: #2B3034; /* 검은색 배경 */
+    border-radius: 8px;
+    padding:20px;
+    transform: rotateY(180deg);
+`;
 
-    background-color:#2B3034;
-    border-radius: 12px;
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.12);
-    cursor: pointer;
+const TarotCardLogoImg = styled.img`
+    width: 30%;
 `;
 
 const CardDescription = styled.p`
