@@ -11,8 +11,6 @@ import Title from "../ui/Title";
 
 import DailyList from "../DailyRecord/DailyList";
 
-//image
-
 //styled
 const Wrapper = styled.div`
     width:100%;
@@ -35,6 +33,12 @@ const DivideLine = styled.div`
 
 const ContentsFrame = styled.div`
     width:100%;
+`
+
+const HighlightedScore = styled.span`
+    color: var(--main-color);
+    font-weight: bold;
+    font-size: 32px;
 `
 
 function ViewDaily() {
@@ -86,13 +90,11 @@ function ViewDaily() {
     }, [])
 
     return (
-        
         <Wrapper>
             <Header></Header>
 
-            
             <TitleFrame>
-                <Title text={"현재 감정점수는 " + averageScore + "점입니다."}></Title>
+                <Title text={<>현재 감정점수는 <HighlightedScore>{averageScore}</HighlightedScore>점입니다.</>}></Title>
             </TitleFrame>
 
             <DivideLine></DivideLine>
@@ -100,11 +102,8 @@ function ViewDaily() {
             <ContentsFrame>
                 <DailyList imgUrl={url} posts={data} onClickItem={(p) => {navigate('/post/' + p.id)}}></DailyList>
             </ContentsFrame>
-
         </Wrapper>
-        
     )   
-
 }
 
 export default ViewDaily;

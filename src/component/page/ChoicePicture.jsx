@@ -19,8 +19,11 @@ import WriteButtonUF from "../ui/Button/WriteButtonUF";
 //styled
 const Wrapper = styled.div`
     width:100%;
-    min-height:100vh;
+    min-height:100vh;   
     padding:0px 11.54% 100px 11.54%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 
     background-color:var(--main-bcColor);
 `
@@ -251,7 +254,7 @@ function ChoicePicture() {
 
                     <TitleFrame>
                         <Title text="등록할 대표 이미지를 선택하세요." />
-                        <SubText>김희찬님의 {myTime}일 하루를 바탕으로 생성된 이미지입니다.</SubText>
+                        <SubText>{myTime}일의 하루를 바탕으로 생성된 이미지입니다.</SubText>
                     </TitleFrame>
 
                     <GenImageFrame>         

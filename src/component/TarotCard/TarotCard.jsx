@@ -29,7 +29,9 @@ const CardContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${({ isSelected }) => (isSelected ? "#FFDD57" : "#2B3034")}; // 선택 여부에 따라 색상 변경
+
+    border: ${({ isSelected }) => (isSelected ? "1px solid #FFDD57" : "1px solid #2B3034")};
+    background-color: #2B3034;
     border-radius: 12px;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.12);
     cursor: pointer;

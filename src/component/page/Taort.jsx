@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { db } from "../../firebase";
 
 import TarotCardList from "../TarotCard/TarotCardList";
 import Title from "../ui/Title";
+import SubTitle from "../ui/SubTitle"
 import WriteButtonF from "../ui/Button/WriteButtonF";
 import WriteButtonUF from "../ui/Button/WriteButtonUF";
 
 function Tarot(props) {
     const [selectedCards, setSelectedCards] = useState([]); // 선택한 카드 관리
     const [data, setData] = useState([]);
+    const [imageUrls, setImageUrls] = useState({}); // 이미지 URL을 저장할 상태
     const [showViewCard, setShowViewCard] = useState(false); // 화면 전환 상태 추가
 
     const navigate = useNavigate();
 
+    const storage = getStorage();
+
+    // 데이터 받아오기
     useEffect(() => {
         let tempData = [];
 
@@ -30,10 +36,30 @@ function Tarot(props) {
             });
     }, []);
 
+    // 이미지 데이터 받아오기
+    useEffect(() => {
+        if (selectedCards.length > 0) {
+            selectedCards.forEach((cardId) => {
+                const imageRef = ref(storage, `images/${cardId}`); // 카드 ID에 맞는 이미지 참조
+
+                getDownloadURL(imageRef)
+                    .then((url) => {
+                        setImageUrls((prevUrls) => ({
+                            ...prevUrls,
+                            [cardId]: url, // 카드 ID에 맞는 이미지 URL 저장
+                        }));
+                    })
+                    .catch((error) => {
+                        console.error("Error getting download URL: ", error);
+                    });
+            });
+        }
+    }, [selectedCards, storage]);
+
     const handleCardSelect = (cardId) => {
         if (selectedCards.includes(cardId)) {
             const newSelectedCards = selectedCards.filter(id => id !== cardId);
-            setSelectedCards(newSelectedCards); 
+            setSelectedCards(newSelectedCards);
         } else if (selectedCards.length < 3) {
             setSelectedCards([...selectedCards, cardId]); // 카드 추가
         }
@@ -66,23 +92,38 @@ function Tarot(props) {
 
                 {/* ViewCard */}
                 <ViewCardWrapper>
-                    <Title text="운세를 확인해보세요" />
+                    <Title text="AI가 제안하는 스트레스 완화방법입니다" />
+                    <SubTitle mt="8px" text="제안하는 완화방법은 과거의 긍정적인 일기를 바탕으로 생성되었습니다"></SubTitle>
+
                     <SelectedCardsList>
                         {selectedCards.map((cardId) => {
                             const card = data.find(card => card.id === cardId);
-                            return (
-                                <SelectedCard key={cardId}>
-                                    <CardTitle>{card.title}</CardTitle>
-                                </SelectedCard>
-                            );
+
+                            if (card) {
+                                const tarotArray = card.tarot.split(',').map(item => item.trim());
+                                const imageUrl = imageUrls[card.id]; // 이미지 URL 가져오기
+
+                                return (
+                                    <SelectedCard key={cardId}>
+                                        {/* 이미지 표시 */}
+                                        {imageUrl && (
+                                            <CardImage src={imageUrl} alt={card.title} />
+                                        )}
+
+                                        {/* 타로 핵심 내용 */}
+                                        {tarotArray.map((tarotItem, index) => (
+                                            <CardDescription key={index} isFirst={index === 0}>
+                                                {tarotItem}
+                                            </CardDescription>
+                                        ))}
+                                    </SelectedCard>
+                                );
+                            }
+                            return null;
                         })}
                     </SelectedCardsList>
 
                     <EntireButtonFrame>
-                        <WriteButtonFrame>
-                            <WriteButtonUF buttonName="공유하기" />
-                        </WriteButtonFrame>
-
                         <WriteButtonFrame onClick={() => navigate('/')}>
                             <WriteButtonF buttonName="확인했어요" />
                         </WriteButtonFrame>
@@ -93,7 +134,7 @@ function Tarot(props) {
     );
 }
 
-//styled
+//styled components
 const Wrapper = styled.div`
     width: 100vw;
     height: 100vh;
@@ -162,24 +203,40 @@ const SelectedCardsList = styled.div`
 `;
 
 const SelectedCard = styled.div`
-    width:200px;
-    height:300px;
+    width:300px;
+    min-height:400px;
     display:flex;
     align-items:center;
     justify-content: center;
+    flex-direction:column;
 
     color: white;
     padding:16px;
 
-    background-color: ${({ isSelected }) => (isSelected ? "#FFDD57" : "#2B3034")}; // 선택 여부에 따라 색상 변경
+    background-color:#2B3034;
     border-radius: 12px;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.12);
     cursor: pointer;
 `;
 
-const CardTitle = styled.p`
-    font-size:20px;
-    font-weight:bold;
-`
+const CardDescription = styled.p`
+    font-size: ${({ isFirst }) => (isFirst ? '16px' : '14px')};
+    line-height: 1.4;
+    margin-bottom: 8px;
+    text-align: center;
+    color: ${({ isFirst }) => (isFirst ? 'white' : '#CCC')};
+    font-weight: ${({ isFirst }) => (isFirst ? 'bold' : 'normal')};
+
+    &:last-child {
+        margin-bottom:0px;  
+    }
+`;
+
+const CardImage = styled.img`
+    width: 100%;
+    height: auto;
+    margin-bottom: 24px;
+    border-radius: 8px;
+`;
 
 export default Tarot;

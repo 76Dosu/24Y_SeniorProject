@@ -6,24 +6,19 @@ import { useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
     display:flex;
 
-    width:100%;
+    width:49%;
+    max-height:200px;
+    min-height:200px;
     padding:24px;
-    margin-bottom:24px;
+    margin-top: 24px;
 
     background-color:#2B3034;
     border-radius:8px;
     cursor:pointer;
-
-    &:first-child {
-        margin-top:24px;
-    }
-
-    &:last-child {
-        margin-bottom:0px;
-    }
 `
 
 const DailyInfoContainer = styled.div`
+    width:100%;
     display:flex;
     flex-direction:column;
 `
@@ -44,35 +39,42 @@ const DailyTItle = styled.p`
 `
 
 const DailyWriteTime = styled.p`
-    width:14px;
+    font-size:14px;
     color:#888;
+    margin-top:auto;
+`
+
+const Daily = styled.p`
+    width:100%;
+    font-size:14px;
+    color:white;
+    margin-top: 8px;
 `
 
 function DailyItems(props) {
-
     const { post, imgUrl } = props;
     const navigate = useNavigate();
 
     const testClick = () => {
-
         navigate('/post/' + post.id)
-
     }
 
+    // prompt의 길이를 100자로 제한
+    const truncatedPrompt = post.prompt.length > 100
+        ? post.prompt.slice(0, 100) + "..."
+        : post.prompt;
+
     return (
-        
         <Wrapper onClick={testClick}>
-            <DailyImage src={imgUrl}/>
+            <DailyImage src={imgUrl} />
 
             <DailyInfoContainer>
                 <DailyTItle>{post.title}</DailyTItle>
+                <Daily>{truncatedPrompt}</Daily>
                 <DailyWriteTime>{post.date}</DailyWriteTime>
             </DailyInfoContainer>
-            
         </Wrapper>
-        
-    )   
-
+    );
 }
 
 export default DailyItems;

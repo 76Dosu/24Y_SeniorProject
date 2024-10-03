@@ -146,6 +146,8 @@ function DailyDetailView() {
             });
     }, [listRef, postId]); // postId가 변경될 때마다 useEffect 실행
 
+
+    const [keywordArray, setKeywordArray] = useState([]);
     useEffect(() => {
         db.collection('daily').doc(postId).get().then(function (doc) {
             setPost(doc.data())
@@ -153,9 +155,6 @@ function DailyDetailView() {
 
         })
     }, [postId]);
-
-    const [keywordArray, setKeywordArray] = useState([]);
-
 
     return (
 
