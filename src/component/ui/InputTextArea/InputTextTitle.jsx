@@ -28,7 +28,7 @@ function InputTextTitle(props) {
     const { value, onChange } = props;
 
     return (
-        <StyledTextArea onChange={onChange} value={value} maxLength="50" placeholder={"제목을 입력해주세요"} ></StyledTextArea>
+        <StyledTextArea onChange={onChange} value={value} maxLength="50" placeholder={"ex) 멋진 졸업 전시회"} ></StyledTextArea>
     )
 
 }

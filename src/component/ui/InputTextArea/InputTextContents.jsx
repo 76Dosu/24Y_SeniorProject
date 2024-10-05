@@ -40,7 +40,7 @@ function InputTextContents(props) {
     };
 
     return (
-        <StyledTextArea onChange={onChange} ref={inputTag} placeholder={"내용을 입력해주세요"} value={value} onKeyUp={(event) => longerTextArea(event, inputTag)}></StyledTextArea>
+        <StyledTextArea onChange={onChange} ref={inputTag} placeholder={"ex) 오늘은 졸업 전시회날이다. 친한 친구가 졸업한다고 해서 구경왔는데 다들 멋지게 잘 한 것 같다. 전시회가 끝나고 친한 친구와 맥주 한 잔 하러 갈 예정이다. 일기를 쓰면 감정을 분석 해주고, 타로 카드를 만들어준다니 신기하다."} value={value} onKeyUp={(event) => longerTextArea(event, inputTag)}></StyledTextArea>
     )
 
 }

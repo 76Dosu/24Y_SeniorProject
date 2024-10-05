@@ -15,8 +15,9 @@ const StyledButton = styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color:white;
-        color:#2B3034;
+        background-color:var(--main-color);
+        border:1px solid var(--main-color);
+        color:white;
     }
 `
 

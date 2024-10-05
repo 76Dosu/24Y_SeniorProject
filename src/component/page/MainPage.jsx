@@ -34,10 +34,10 @@ function MainPage() {
     return (
         
         <Wrapper>
-            <Title text="안녕하세요 김희찬님" ></Title>
+            <Title text="오늘 하루는 어땠나요? 하루를 기록해보세요." ></Title>
 
-            <SubTitle text="오늘 하루는 어땠나요? 일기를 통해 하루를 기록해보세요!"
-                      mt="12px"
+            <SubTitle text="해당 프로토타입은 전시회 체험을 위해 구현됐습니다."
+                      mt="8px"
                       mb="80px">
 
             </SubTitle>

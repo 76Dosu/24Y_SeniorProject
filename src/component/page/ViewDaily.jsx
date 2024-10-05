@@ -6,9 +6,7 @@ import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { db } from "../../firebase"
 
 //ui
-import Header from "../ui/Header";
 import Title from "../ui/Title";
-
 import DailyList from "../DailyRecord/DailyList";
 
 //styled
@@ -21,8 +19,8 @@ const Wrapper = styled.div`
 `
 
 const TitleFrame = styled.div`
+    padding-top:200px;
     width:100%;
-    margin-top:100px;
 `
 
 const DivideLine = styled.div`
@@ -91,8 +89,6 @@ function ViewDaily() {
 
     return (
         <Wrapper>
-            <Header></Header>
-
             <TitleFrame>
                 <Title text={<>현재 감정점수는 <HighlightedScore>{averageScore}</HighlightedScore>점입니다.</>}></Title>
             </TitleFrame>

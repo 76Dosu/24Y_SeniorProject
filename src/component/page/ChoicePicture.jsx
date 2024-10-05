@@ -1,28 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
-
-// import { db } from "../../firebase";
 import { getStorage, ref, uploadString } from "firebase/storage";
 
 //ui
-import Header from "../ui/Header";
-
 import Title from "../ui/Title";
 import GenImage from "../ui/GenImage";
-
 import WriteButtonF from "../ui/Button/WriteButtonF";
 import WriteButtonUF from "../ui/Button/WriteButtonUF";
-
-//image
 
 //styled
 const Wrapper = styled.div`
     width:100%;
     min-height:100vh;   
-    padding:0px 11.54% 100px 11.54%;
+    padding:0px 11.54%;
+
     display:flex;
     flex-direction:column;
+    justify-content:center;
     align-items:center;
 
     background-color:var(--main-bcColor);
@@ -30,7 +25,6 @@ const Wrapper = styled.div`
 
 const TitleFrame = styled.div`
     text-align:center;
-    margin-top:100px;
 `
 
 const SubText = styled.p`
@@ -39,7 +33,7 @@ const SubText = styled.p`
     color:white;
 
     margin-top:12px;
-    margin-bottom:80px;
+    margin-bottom:60px;
 `
 
 const GenImageFrame = styled.div`
@@ -131,6 +125,51 @@ const LoadingText = styled.p`
     }
 `;
 
+// 팝업 스타일
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+`;
+
+const ModalContent = styled.div`
+    background-color: var(--main-bcColor);
+    padding:40px 20px;
+    border-radius: 24px;
+    width: 40%;
+    color:white;
+    
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+`;
+
+const ModalTitle = styled.p`
+    font-size: 24px;
+    font-weight: bold;
+    color:var(--main-color);
+
+    margin-bottom:24px;
+`;
+
+const ModalParagraph = styled.p`
+    font-size: 16px;
+    line-height:1.4;
+    margin-bottom:4px;
+    color:white;
+`;
+
+const ModalCheck = styled.div`
+    margin-top:40px;
+`
+
 function ChoicePicture() {
 
     const navigate = useNavigate();
@@ -139,12 +178,6 @@ function ChoicePicture() {
     // firebase
     const storage = getStorage();
     const storageRef = ref(storage, `images/${location.state.timestamp}`);
-
-    let year = new Date().getFullYear();
-    let month = new Date().getMonth();
-    let day = new Date().getDate();
-    let myTime = `${year}.${month + 1}.${day}`;
-    
     const [isLoading, setIsLoading] = useState(false);
 
     // 이미지 생성
@@ -207,15 +240,17 @@ function ChoicePicture() {
 
     }, [generateImage]);
 
+    // 팝업 상태 관리
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
     // 선택 이미지 콘솔찍기
     const [choosedImageUrl, setChoosedImageUrl] = useState(imageUrlB);
 
     const imageClick = (url) => {
         return () => {
             setChoosedImageUrl(url);
-
-            // console.log(location.state.timestamp);
-            // console.log(choosedImageUrl);
         };
     };
 
@@ -223,11 +258,11 @@ function ChoicePicture() {
         try {
             const base64WithoutPrefix = choosedImageUrl.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
             const base64urlChoosedImage = base64ToBase64url(base64WithoutPrefix);
-    
+
             await uploadString(storageRef, base64urlChoosedImage, 'base64url');
             navigate(`/post/${location.state.timestamp}`);
 
-            
+
         } catch (error) {
             console.error("Error submitting image:", error);
         }
@@ -241,102 +276,119 @@ function ChoicePicture() {
     return (
 
         <div>
-        {
-            isLoading === true 
-            
-            ?
+            {
+                isLoading === true
 
-                <Wrapper>
+                    ?
 
-                    <LoadingContainer>
-                        <LoadingText>{animatedLoadingText}</LoadingText>
-                    </LoadingContainer>
-                    
-                    <Header></Header>
+                    <Wrapper>
 
-                    <TitleFrame>
-                        <Title text="등록할 대표 이미지를 선택하세요." />
-                        <SubText>{myTime}일의 하루를 바탕으로 생성된 이미지입니다.</SubText>
-                    </TitleFrame>
+                        <LoadingContainer>
+                            <LoadingText>{animatedLoadingText}</LoadingText>
+                        </LoadingContainer>
 
-                    <GenImageFrame>         
-                        <InputFrame onClick={imageClick(imageUrlA)}>
-                            <GenImage imgURL={imageUrlA} isSelected={choosedImageUrl === imageUrlA} />
-                            <Label htmlFor="imgA"></Label>
-                            <Input name="img" id="imgA" value={imageUrlA} type="radio" />
-                        </InputFrame>
+                        <TitleFrame>
+                            <Title text="등록할 대표 이미지를 선택하세요." />
+                            <SubText>작성한 일기를 바탕으로 생성된 이미지입니다.</SubText>
+                        </TitleFrame>
 
-                        <InputFrame onClick={imageClick(imageUrlB)}>
-                            <GenImage imgURL={imageUrlB} isSelected={choosedImageUrl === imageUrlB} />
-                            <Label htmlFor="imgB"></Label>
-                            <Input name="img" id="imgB" value={imageUrlB} type="radio" />
-                        </InputFrame>
+                        <GenImageFrame>
+                            <InputFrame onClick={imageClick(imageUrlA)}>
+                                <GenImage imgURL={imageUrlA} isSelected={choosedImageUrl === imageUrlA} />
+                                <Label htmlFor="imgA"></Label>
+                                <Input name="img" id="imgA" value={imageUrlA} type="radio" />
+                            </InputFrame>
 
-                        <InputFrame onClick={imageClick(imageUrlC)}> 
-                            <GenImage imgURL={imageUrlC} isSelected={choosedImageUrl === imageUrlC} />
-                            <Label htmlFor="imgC"></Label>
-                            <Input name="img" id="imgC" value={imageUrlC} type="radio" />
-                        </InputFrame>
-                    </GenImageFrame>
+                            <InputFrame onClick={imageClick(imageUrlB)}>
+                                <GenImage imgURL={imageUrlB} isSelected={choosedImageUrl === imageUrlB} />
+                                <Label htmlFor="imgB"></Label>
+                                <Input name="img" id="imgB" value={imageUrlB} type="radio" />
+                            </InputFrame>
 
-                    <EntireButtonFrame>
-                        <WriteButtonFrame onClick={() => navigate(-1)}>
-                            <WriteButtonUF buttonName="뒤로가기" />
-                        </WriteButtonFrame>
+                            <InputFrame onClick={imageClick(imageUrlC)}>
+                                <GenImage imgURL={imageUrlC} isSelected={choosedImageUrl === imageUrlC} />
+                                <Label htmlFor="imgC"></Label>
+                                <Input name="img" id="imgC" value={imageUrlC} type="radio" />
+                            </InputFrame>
+                        </GenImageFrame>
 
-                        <WriteButtonFrame onClick={SubmitImage}>
-                            <WriteButtonF buttonName="다음으로" />
-                        </WriteButtonFrame>
-                    </EntireButtonFrame>
-                </Wrapper>
-                
+                        <EntireButtonFrame>
+                            <WriteButtonFrame onClick={openModal}>
+                                <WriteButtonUF buttonName="이미지는 어디에 쓰이나요?" />
+                            </WriteButtonFrame>
+                            
+                            <WriteButtonFrame onClick={() => navigate('/')}>
+                                <WriteButtonUF buttonName="처음으로" />
+                            </WriteButtonFrame>
 
-            :
+                            <WriteButtonFrame onClick={SubmitImage}>
+                                <WriteButtonF buttonName="다음으로" />
+                            </WriteButtonFrame>
+                        </EntireButtonFrame>
+                    </Wrapper>
 
-                <Wrapper>
-                
-                
-                <Header></Header>
+                    :
 
-                    <TitleFrame>
-                        <Title text="등록할 대표 이미지를 선택하세요." />
-                        <SubText>김희찬님의 2024년 5월 3일 하루를 바탕으로 생성된 이미지입니다.</SubText>
-                    </TitleFrame>
+                    <Wrapper>
 
-                    <GenImageFrame>
-                        <InputFrame onClick={imageClick(imageUrlA)}>
-                            <GenImage imgURL={imageUrlA} isSelected={choosedImageUrl === imageUrlA} />
-                            <Label htmlFor="imgA"></Label>
-                            <Input name="img" id="imgA" value={imageUrlA} type="radio" />
-                        </InputFrame>
+                        <TitleFrame>
+                            <Title text="등록할 대표 이미지를 선택하세요." />
+                            <SubText>작성한 일기를 바탕으로 생성된 이미지입니다.</SubText>
+                        </TitleFrame>
 
-                        <InputFrame onClick={imageClick(imageUrlB)}>
-                            <GenImage imgURL={imageUrlB} isSelected={choosedImageUrl === imageUrlB} />
-                            <Label htmlFor="imgB"></Label>
-                            <Input name="img" id="imgB" value={imageUrlB} type="radio" />
-                        </InputFrame>
+                        <GenImageFrame>
+                            <InputFrame onClick={imageClick(imageUrlA)}>
+                                <GenImage imgURL={imageUrlA} isSelected={choosedImageUrl === imageUrlA} />
+                                <Label htmlFor="imgA"></Label>
+                                <Input name="img" id="imgA" value={imageUrlA} type="radio" />
+                            </InputFrame>
 
-                        <InputFrame onClick={imageClick(imageUrlC)}> 
-                            <GenImage imgURL={imageUrlC} isSelected={choosedImageUrl === imageUrlC} />
-                            <Label htmlFor="imgC"></Label>
-                            <Input name="img" id="imgC" value={imageUrlC} type="radio" />
-                        </InputFrame>
-                    </GenImageFrame>
+                            <InputFrame onClick={imageClick(imageUrlB)}>
+                                <GenImage imgURL={imageUrlB} isSelected={choosedImageUrl === imageUrlB} />
+                                <Label htmlFor="imgB"></Label>
+                                <Input name="img" id="imgB" value={imageUrlB} type="radio" />
+                            </InputFrame>
 
-                    <EntireButtonFrame>
-                        <WriteButtonFrame onClick={() => navigate(-1)}>
-                            <WriteButtonUF buttonName="뒤로가기" />
-                        </WriteButtonFrame>
+                            <InputFrame onClick={imageClick(imageUrlC)}>
+                                <GenImage imgURL={imageUrlC} isSelected={choosedImageUrl === imageUrlC} />
+                                <Label htmlFor="imgC"></Label>
+                                <Input name="img" id="imgC" value={imageUrlC} type="radio" />
+                            </InputFrame>
+                        </GenImageFrame>
 
-                        <WriteButtonFrame onClick={SubmitImage}>
-                            <WriteButtonF buttonName="다음으로" />
-                        </WriteButtonFrame>
-                    </EntireButtonFrame>
+                        <EntireButtonFrame>
+                            <WriteButtonFrame onClick={openModal}>
+                                <WriteButtonUF buttonName="이미지는 어디에 쓰이나요?" />
+                            </WriteButtonFrame>
 
-            </Wrapper>
+                            <WriteButtonFrame onClick={() => navigate('/')}>
+                                <WriteButtonUF buttonName="처음으로" />
+                            </WriteButtonFrame>
 
-        }
-    </div>
+                            <WriteButtonFrame onClick={SubmitImage}>
+                                <WriteButtonF buttonName="다음으로" />
+                            </WriteButtonFrame>
+                        </EntireButtonFrame>
+
+                        {/* 팝업이 열려 있을 때만 오버레이와 모달을 표시 */}
+                        {isModalOpen && (
+                            <ModalOverlay>
+                                <ModalContent>
+                                    <ModalTitle>대표 이미지를 선택해보세요.</ModalTitle>
+                                    <ModalParagraph>선택한 이미지는 작성한 일기를 대표합니다.</ModalParagraph>
+                                    <ModalParagraph>또한, 일기로 생성되는 타로의 대표 이미지로도 사용됩니다.</ModalParagraph>
+                                    <ModalCheck onClick={closeModal}>
+                                        <WriteButtonUF buttonName="확인했어요">확인했어요</WriteButtonUF>
+                                    </ModalCheck>
+
+                                </ModalContent>
+                            </ModalOverlay>
+                        )}
+
+                    </Wrapper>
+
+            }
+        </div>
     );
 
 }
