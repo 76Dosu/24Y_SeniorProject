@@ -35,7 +35,7 @@ function Tarot(props) {
                     tempData.push({ id: doc.id, ...doc.data() }); // ID와 데이터를 함께 저장
                 });
 
-                setData(tempData);
+                setData(tempData.sort(() => Math.random() - 0.5));
             });
     }, []);
 
@@ -224,7 +224,7 @@ const SelectedCardsList = styled.div`
 
 const SelectedCard = styled.div`
     width: 300px;
-    min-height: 400px;
+    min-height: 440px;
     perspective: 1000px; /* 3D 효과를 위한 원근감 */
     cursor: pointer;
 `;
@@ -232,7 +232,7 @@ const SelectedCard = styled.div`
 const CardInner = styled.div`
     position: relative;
     width: 100%;
-    height: 400px;
+    height: 440px;
     transform-style: preserve-3d;
     transition: transform 0.8s;
     transform: ${({ isFlipped }) => (isFlipped ? "rotateY(180deg)" : "rotateY(0)")};
@@ -241,7 +241,7 @@ const CardInner = styled.div`
 const CardFront = styled.div`
     position: absolute;
     width: 100%;
-    height: 400px;
+    height: 440px;
     backface-visibility: hidden; /* 앞면에 뒷면이 보이지 않도록 설정 */
     background-color: #2B3034;
     border-radius: 8px;

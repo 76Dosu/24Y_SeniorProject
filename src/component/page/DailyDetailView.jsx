@@ -6,21 +6,24 @@ import { useNavigate } from "react-router-dom";
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { db } from '../../firebase'
 
-import Header from "../ui/Header";
 import Title from "../ui/Title"
+import WriteButtonF from "../ui/Button/WriteButtonF";
 
 // style
 const Wrapper = styled.div`
     width:100%;
     min-height:100vh;
-    padding:0px 11.54% 100px 11.54%;
+    padding:100px 11.54%;
 
     background-color:var(--main-bcColor);
 `
 
+const ReturnButtonFrame = styled.div`
+    width:fit-content;
+`
+
 const TitleFrame = styled.div`
     width:100%;
-    margin-top:100px;
 `
 const DailyScore = styled.p`
     font-size: 20px;
@@ -40,12 +43,13 @@ const ContentsContainer = styled.div`
     margin-top:24px;
 
     display:flex;
+    flex-wrap:wrap;
     gap:24px;
 `
 
 // 일기 내용
 const DailyContainer = styled.div`
-    width:100%;
+    width:30%;
     height:fit-content;
     border-radius:8px;
     background-color:#2B3034;
@@ -56,24 +60,6 @@ const DailyContentsTitle = styled.p`
     font-size: 24px;
     font-weight: 700;
     color:white;
-`
-
-const DailyKeywordFrame = styled.div`
-    width:fit-content;
-    display:flex;
-    align-items: center;
-    gap:12px;
-    margin-top:12px;
-`
-
-const DailyKeyword = styled.p`
-    width:fit-content;
-    font-size: 14px;
-    font-weight: 400;
-    color:#2B3034;
-    background-color:white;
-    border-radius:50px;
-    padding:8px 16px;
 `
 
 const DailyContents = styled.p`
@@ -88,12 +74,12 @@ const DailyContents = styled.p`
 const DailyImage = styled.img`
     width:100%;
     border-radius:8px;
-    margin-top:40px;
+    margin-top:12px;
 `
 
 // 일기 분석 내용
 const DailyAnalContainer = styled.div`
-    width:100%;
+    width:calc(70% - 24px);
     height:fit-content;
     border-radius:8px;
     background-color:#2B3034;
@@ -102,7 +88,7 @@ const DailyAnalContainer = styled.div`
 
 const DailyAnalysisItem = styled.div`
     width:100%;
-    margin-bottom:60px;
+    margin-bottom:40px;
 
     &:last-child {
         margin-bottom:0px;
@@ -110,15 +96,45 @@ const DailyAnalysisItem = styled.div`
 `
 
 const GoTarot = styled.p`
-    width:fit-content;
+    width:100%;
     color:white;
-    font-size: 18px;
+    font-size: 16px;
+    text-align: center;
     font-weight: bold;
 
-    border:1px solid white;
-    padding:16px 24px;
-    border-radius:50px;
+    padding:16px 0px;
+    margin-top:24px;
+    border-radius:8px;
+
+    background-color:var(--main-bcColor);
+    transition: .3s;
+
+    &:hover {
+        background-color:white;
+        color:#333;
+    }
 `
+
+// 타로
+const TarotFrame = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: #2B3034; /* 검은색 배경 */
+    border-radius: 8px;
+`;
+
+const CardDescription = styled.p`
+    font-size: ${({ isFirst }) => (isFirst ? '20px' : '14px')};
+    line-height: 1.4;
+    margin-top: ${({ isFirst }) => (isFirst ? '20px' : '8px')};
+    text-align: center; 
+    color: ${({ isFirst }) => (isFirst ? 'white' : '#CCC')};
+    font-weight: ${({ isFirst }) => (isFirst ? 'bold' : 'normal')};
+
+    &:last-child {
+        margin-bottom:0px;  
+    }
+`;
 
 function DailyDetailView() {
 
@@ -134,8 +150,11 @@ function DailyDetailView() {
         title: "",
         score: "",
         reason: "",
-        solution: ""
+        solution: "",
+        tarot: "",
     })
+
+    const tarotArray = post.tarot.split(',').map(item => item.trim());
 
     const [base64Url, setBase64Url] = useState('');
     const storage = getStorage();
@@ -173,35 +192,36 @@ function DailyDetailView() {
     return (
 
         <Wrapper>
-
-            <Header />
-
             <TitleFrame>
-
-                <DailyScore>일기 점수 {post.score}점</DailyScore>
+                <DailyScore>감정 점수 {post.score}점</DailyScore>
                 <Title text={post.title} />
-                <DailyKeywordFrame>
-                    <DailyKeyword>{keywordArray[0]}</DailyKeyword>
-                    <DailyKeyword>{keywordArray[1]}</DailyKeyword>
-                    <DailyKeyword>{keywordArray[2]}</DailyKeyword>
-                    <DailyKeyword>{keywordArray[3]}</DailyKeyword>
-                    <DailyKeyword>{keywordArray[4]}</DailyKeyword>
-                </DailyKeywordFrame>
             </TitleFrame>
+
             <DivideLine />
 
             <ContentsContainer>
-
-
-                {/* 일기 내용 */}
                 <DailyContainer>
-                    <DailyContentsTitle>일기 내용</DailyContentsTitle>
-                    <DailyContents>{post.prompt}</DailyContents>
-                    <DailyImage src={base64Url} />
+                    <DailyContentsTitle>감정 카드</DailyContentsTitle>
+                    <TarotFrame>
+                        <DailyImage src={base64Url} />
+                        {tarotArray.map((tarotItem, index) => (
+                            <CardDescription key={index} isFirst={index === 0}>
+                                {tarotItem}
+                            </CardDescription>
+                        ))}
+                    </TarotFrame>
+
+                    <GoTarot onClick={() => { navigate('/tarot') }}>타로 뽑기</GoTarot>
                 </DailyContainer>
 
                 {/* 일기 분석 내용 */}
                 <DailyAnalContainer>
+
+                    {/* 일기내용 */}
+                    <DailyAnalysisItem>
+                        <DailyContentsTitle>일기 내용</DailyContentsTitle>
+                        <DailyContents>{post.prompt}</DailyContents>
+                    </DailyAnalysisItem>
 
                     {/* 근거 */}
                     <DailyAnalysisItem>
@@ -215,13 +235,12 @@ function DailyDetailView() {
                         <DailyContents>{post.solution}</DailyContents>
                     </DailyAnalysisItem>
 
-                    {/* 타로 */}
-                    <GoTarot onClick={() => {navigate('/tarot')}}>타로 보기</GoTarot>
-
+                    <ReturnButtonFrame onClick={() => { navigate('/') }}>
+                        <WriteButtonF buttonName="돌아가기"></WriteButtonF>
+                    </ReturnButtonFrame>
                 </DailyAnalContainer>
 
             </ContentsContainer>
-
         </Wrapper>
 
     )

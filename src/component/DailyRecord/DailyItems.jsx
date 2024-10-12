@@ -15,6 +15,11 @@ const Wrapper = styled.div`
     background-color:#2B3034;
     border-radius:8px;
     cursor:pointer;
+    transition:.3s;
+
+    &:hover {
+        background-color:#444;
+    }
 `
 
 const DailyInfoContainer = styled.div`
