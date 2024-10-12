@@ -124,6 +124,7 @@ const ModalOverlay = styled.div`
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter:blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -184,7 +185,6 @@ function DailyWrite(props) {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    // 입력 핸들러
     const handleContentsChange = (e) => setPrompt(e.target.value);
     const handleTitleChange = (e) => setTitle(e.target.value);
 
@@ -220,7 +220,7 @@ function DailyWrite(props) {
         }
 
         navigate('/choicePicture', { state: { timestamp, results } });
-    }, [title, prompt, results, emotionalScore, analysisReason, analysisSolution, tarot, navigate]); // 필요한 의존성 추가
+    }, [title, prompt, results, emotionalScore, analysisReason, analysisSolution, tarot, navigate]);
 
     const handleClick = async (e) => {
         if (!title || !prompt) {
@@ -247,7 +247,7 @@ function DailyWrite(props) {
             onSubmit();
             setIsSubmitted(false);
         }
-    }, [isSubmitted, onSubmit]); // 의존성 배열에 onSubmit 추가
+    }, [isSubmitted, onSubmit]);
 
     const createDaily = async (e) => {
         try {
@@ -273,7 +273,7 @@ function DailyWrite(props) {
                 model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
-                    content: `아무 내용의 일기를 60자로 줄글로 써줘`
+                    content: `무슨 주제이든 상관없으니까 참신한 주제의 60자정도의 일기를 줄글로 써줘, 부정적이거나 긍정적인거 아무거나 괜찮아 `
                 }]
             })
         })
@@ -281,6 +281,7 @@ function DailyWrite(props) {
             .then(data => {
                 const diary = data.choices[0].message.content;
                 setRandomDaily(diary);
+                console.log("Generated random daily:", randomDaily);
                 return diary;
             })
             .catch((error) => {
@@ -331,7 +332,7 @@ function DailyWrite(props) {
                 model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
-                    content: `${prompt}라는 일기에 대해서 일기속 드러나는 감정에 대해서 점수로 내줘. 부정적인 감정이 많으면 점수를 낮게 줘도 돼 100점 만점이고 "80"처럼 숫자만 출력해주면 돼`
+                    content: `${prompt}라는 일기에 대해서 일기속 드러나는 감정에 대해서 점수로 내줘. 부정적인 감정이 많으면 점수를 낮게 줘도 돼 100점 만점이고 점수 간격은 1씩이야 결과물은"82"처럼 숫자만 출력해주면 돼.`
                 }]
             })
         })
@@ -421,7 +422,7 @@ function DailyWrite(props) {
                 model: "gpt-4o-mini",
                 messages: [{
                     role: "user",
-                    content: `${prompt}라는 일기를 가지고 타로카드를 만들거야. 너가 해줄 일은 해당 일기의 이름을 지어주고 일기에서 긍정적인 부분을 강화시킬수 있는 대책안을 1개만 작성해줘. 타로카드 이름은 "**의 카드"처럼 **에 키워드를 넣어주고 대책안은 50자정도의 줄글이어야 해. 또한, 타로 카드 이름과 대책안은 ,로 구분해줘. 대신 타로 카드이름과 대책안을 구분 짓는거 외에는 ,를 쓰지말아줘`
+                    content: `${prompt}라는 일기를 가지고 타로카드를 만들거야. 너가 해줄 일은 해당 일기의 이름을 지어주고 일기에서 긍정적인 부분을 강화시킬수 있는 색다른 대책안을 1개만 작성해줘. 타로카드 이름은 "**의 카드"처럼 **에 키워드를 넣어주고 대책안은 50자정도의 줄글이어야 해. 또한, 타로 카드 이름과 대책안은 ,로 구분해줘. 대신 타로 카드이름과 대책안을 구분 짓는거 외에는 ,를 쓰지말아줘`
                 }]
             })
         })
@@ -473,19 +474,26 @@ function DailyWrite(props) {
                         </WriteFrame>
 
                         <EntireButtonFrame>
+                            <FunctionBtn>
+                                <WhatIsThis onClick={openModal}>
+                                    <WriteButtonUF buttonName="이게 뭐하는거에요?"></WriteButtonUF>
+                                </WhatIsThis>
+                                <CreateDaily onClick={createDaily}>
+                                    <WriteButtonUF buttonName="랜덤 일기 생성하기"></WriteButtonUF>
+                                </CreateDaily>
+                            </FunctionBtn>
 
+                            <FunctionBtn>
+                                <WriteButtonFrame onClick={(e) => { navigate(-1) }}>
+                                    <WriteButtonUF buttonName="처음으로"></WriteButtonUF>
+                                </WriteButtonFrame>
 
-                            <WriteButtonFrame onClick={createDaily}>
-                                <WriteButtonUF buttonName="테스트 일기생성"></WriteButtonUF>
-                            </WriteButtonFrame>
+                                <WriteButtonFrame disabled={!title || !prompt} onClick={handleClick}>
+                                    <WriteButtonF buttonName="다음으로">
+                                    </WriteButtonF>
+                                </WriteButtonFrame>
+                            </FunctionBtn>
 
-                            <WriteButtonFrame onClick={(e) => { navigate(-1) }}>
-                                <WriteButtonUF buttonName="처음으로"></WriteButtonUF>
-                            </WriteButtonFrame>
-
-                            <WriteButtonFrame onClick={handleClick}>
-                                <WriteButtonF buttonName="다음으로"></WriteButtonF>
-                            </WriteButtonFrame>
                         </EntireButtonFrame>
                     </Wrapper>
 

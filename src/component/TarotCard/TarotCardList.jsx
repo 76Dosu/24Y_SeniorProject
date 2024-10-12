@@ -43,7 +43,7 @@ function TarotCardList({ posts, selectedCards, onCardSelect }) {
 
 //styled
 const Wrapper = styled.div`
-    width: fit-content;
+    width: 100%;
     overflow: scroll;
     padding: 40px;
 `;

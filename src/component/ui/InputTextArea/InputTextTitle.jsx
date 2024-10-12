@@ -17,9 +17,9 @@ const StyledTextArea = styled.textarea`
     resize:none; 
 
     &:focus {
-    outline: none; /* 기본 브라우저 아웃라인 제거 */
-    border: none; /* 원하는 포커스 스타일 추가 */
-    background-color: none; /* 포커스 시 배경색 변경 */
+    outline: none;
+    border: none;
+    background-color: none;
   }
 `
 
@@ -28,7 +28,7 @@ function InputTextTitle(props) {
     const { value, onChange } = props;
 
     return (
-        <StyledTextArea onChange={onChange} value={value} maxLength="50" placeholder={"ex) 멋진 졸업 전시회"} ></StyledTextArea>
+        <StyledTextArea onChange={onChange} value={value} maxLength="50" placeholder={"본인의 이름을 적어주세요"} ></StyledTextArea>
     )
 
 }

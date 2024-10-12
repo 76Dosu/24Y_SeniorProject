@@ -133,6 +133,7 @@ const ModalOverlay = styled.div`
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter:blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -316,10 +317,6 @@ function ChoicePicture() {
                             <WriteButtonFrame onClick={openModal}>
                                 <WriteButtonUF buttonName="이미지는 어디에 쓰이나요?" />
                             </WriteButtonFrame>
-                            
-                            <WriteButtonFrame onClick={() => navigate('/')}>
-                                <WriteButtonUF buttonName="처음으로" />
-                            </WriteButtonFrame>
 
                             <WriteButtonFrame onClick={SubmitImage}>
                                 <WriteButtonF buttonName="다음으로" />
@@ -359,10 +356,6 @@ function ChoicePicture() {
                         <EntireButtonFrame>
                             <WriteButtonFrame onClick={openModal}>
                                 <WriteButtonUF buttonName="이미지는 어디에 쓰이나요?" />
-                            </WriteButtonFrame>
-
-                            <WriteButtonFrame onClick={() => navigate('/')}>
-                                <WriteButtonUF buttonName="처음으로" />
                             </WriteButtonFrame>
 
                             <WriteButtonFrame onClick={SubmitImage}>

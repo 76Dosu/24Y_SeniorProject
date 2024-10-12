@@ -15,6 +15,11 @@ const Wrapper = styled.div`
     background-color:#2B3034;
     border-radius:8px;
     cursor:pointer;
+    transition:.3s;
+
+    &:hover {
+        background-color:#444;
+    }
 `
 
 const DailyInfoContainer = styled.div`
@@ -47,7 +52,8 @@ const DailyWriteTime = styled.p`
 const Daily = styled.p`
     width:100%;
     font-size:14px;
-    color:white;
+    line-height:1.4;
+    color:#CCC;
     margin-top: 8px;
 `
 
