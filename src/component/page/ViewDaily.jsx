@@ -23,10 +23,6 @@ const Wrapper = styled.div`
     background-color:var(--main-bcColor);
 `;
 
-const ReturnButtonFrame = styled.div`
-    width:fit-content;
-`
-
 const TitleFrame = styled.div`
     padding-top:100px;
     width:100%;
@@ -53,60 +49,6 @@ const FunctionBtn = styled.div`
     gap:20px;
     padding-top: 40px;
 `;
-
-const ModalOverlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-`;
-
-const ModalContent = styled.div`
-    background-color: var(--main-bcColor);
-    padding:40px 20px;
-    border-radius: 24px;
-    width:60%;
-    color:white;
-    display:flex;
-    flex-direction:column;
-    align-items: center;
-`;
-
-const ModalTitle = styled.p`
-    font-size: 24px;
-    font-weight: bold;
-    color:var(--main-color);
-
-    margin-bottom:24px;
-`;
-
-const ModalParagraph = styled.p`
-    font-size: 16px;
-    line-height:1.4;
-    margin-bottom:4px;
-    color:white;
-`;
-
-const ModalCheck = styled.div`
-    margin-top:40px;
-`;
-
-// 팝업 스타일
-const FunctionBtn = styled.div`
-    display:flex;
-    gap:20px;
-    padding-top: 40px;
-`
-
-const WhatIsThis = styled.div`
-    width:fit-content;
-`
 
 const ModalOverlay = styled.div`
     position: fixed;
