@@ -21,6 +21,10 @@ const ReturnButtonFrame = styled.div`
     width:fit-content;
 `;
 
+const ReturnButtonFrame = styled.div`
+    width:fit-content;
+`
+
 const TitleFrame = styled.div`
     width:100%;
 `;
@@ -172,6 +176,27 @@ const CardDescription = styled.p`
     }
 `;
 
+// 타로
+const TarotFrame = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: #2B3034; /* 검은색 배경 */
+    border-radius: 8px;
+`;
+
+const CardDescription = styled.p`
+    font-size: ${({ isFirst }) => (isFirst ? '20px' : '14px')};
+    line-height: 1.4;
+    margin-top: ${({ isFirst }) => (isFirst ? '20px' : '8px')};
+    text-align: center; 
+    color: ${({ isFirst }) => (isFirst ? 'white' : '#CCC')};
+    font-weight: ${({ isFirst }) => (isFirst ? 'bold' : 'normal')};
+
+    &:last-child {
+        margin-bottom:0px;  
+    }
+`;
+
 function DailyDetailView() {
 
     const postId = useParams().id;
@@ -192,6 +217,8 @@ function DailyDetailView() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState({ title: '', rank: '', total: '' });
+
+    const tarotArray = post.tarot.split(',').map(item => item.trim());
 
     const tarotArray = post.tarot.split(',').map(item => item.trim());
 
