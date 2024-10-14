@@ -136,7 +136,7 @@ const ModalContent = styled.div`
 `;
 
 const ModalParagraph = styled.p`
-    font-size: 16px;
+    font-size: 20px;
     line-height:1.4;
     margin-bottom:4px;
     color:white;
@@ -145,7 +145,7 @@ const ModalParagraph = styled.p`
 const HighlightedText = styled.span`
     color: var(--main-color);
     font-weight: bold;
-    font-size: 18px;
+    font-size: 24px;
 `;
 
 const ModalCheck = styled.div`
