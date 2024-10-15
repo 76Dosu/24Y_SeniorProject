@@ -139,7 +139,7 @@ function ViewDaily() {
             .catch((error) => {
                 console.error("Error listing images: ", error);
             });
-    }, [listRef, storage]);
+    },[]);
 
     useEffect(function () {
         let tempData = [];

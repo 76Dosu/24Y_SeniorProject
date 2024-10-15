@@ -72,7 +72,7 @@ function DailyItems(props) {
 
     return (
         <Wrapper onClick={testClick}>
-            <DailyImage src={imgUrl} />
+            <DailyImage loading="lazy" src={imgUrl} />
 
             <DailyInfoContainer>
                 <DailyTItle>{post.title}</DailyTItle>
