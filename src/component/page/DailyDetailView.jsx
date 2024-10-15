@@ -23,13 +23,15 @@ const ReturnButtonFrame = styled.div`
 
 const TitleFrame = styled.div`
     width:100%;
+    display:flex;
 `;
 
 const DailyScore = styled.p`
-    font-size: 20px;
-    font-weight: 400;
+    font-size: 32px;
+    font-weight:700;
     color:var(--main-color);
     margin-bottom:8px;
+    margin-right:8px;
 `;
 
 const DivideLine = styled.div`
@@ -253,8 +255,8 @@ function DailyDetailView() {
     return (
         <Wrapper>
             <TitleFrame>
-                <DailyScore>감정 점수 {post.score}점</DailyScore>
-                <Title text={post.title} />
+                <DailyScore>[{post.score}점]</DailyScore>
+                <Title text={post.title} />   
             </TitleFrame>
 
             <DivideLine />
@@ -306,9 +308,9 @@ function DailyDetailView() {
                 <ModalOverlay>
                     <ModalContent>
                         <ModalParagraph>
-                            <HighlightedText>{modalContent.title}</HighlightedText>님의 감정점수는{' '}
+                            <HighlightedText>{modalContent.title}</HighlightedText>님의 일기는{' '}
                             <HighlightedText>{modalContent.total}</HighlightedText>명의 관람객 중{' '}
-                            <HighlightedText>{modalContent.rank}</HighlightedText>등 입니다.
+                            <HighlightedText>{modalContent.rank}</HighlightedText>번째로 긍정적입니다.
                         </ModalParagraph>
                         <ModalCheck onClick={closeModal}>
                             <WriteButtonUF buttonName="확인했어요">확인했어요</WriteButtonUF>
